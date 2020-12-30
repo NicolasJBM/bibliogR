@@ -1,0 +1,14 @@
+Name: Combine
+Description: Get references from EBSCO or Elsevier.
+Binding: combine_references
+Interactive: true
+
+Name: Import
+Description: Import the full list of references in the package.
+Binding: import_references
+Interactive: true
+
+Name: Cite
+Description: Search and insert citations.
+Binding: insert_citations
+Interactive: true

@@ -284,10 +284,12 @@ insert_citations <- function() {
 
 
     # Field
-    output$filtfield <- make_filter(
-      dataset = afterfiltperiod(), variable = "field",
-      id = "slctfield", label = "Field:"
-    )
+    output$filtfield <- renderUI({
+      make_filter(
+        dataset = afterfiltperiod(), variable = "field",
+        id = "slctfield", label = "Field:"
+      )
+    })
     afterfiltfield <- reactive({
       filter_data(
         dataset = afterfiltperiod(), variable = "field",
@@ -296,10 +298,12 @@ insert_citations <- function() {
     })
 
     # Journal
-    output$filtjournal <- make_filter(
-      dataset = afterfiltfield(), variable = "journal",
-      id = "slctjournal", label = "Journal:"
-    )
+    output$filtjournal <- renderUI({
+      make_filter(
+        dataset = afterfiltfield(), variable = "journal",
+        id = "slctjournal", label = "Journal:"
+      )
+    })
     afterfiltjournal <- reactive({
       filter_data(
         dataset = afterfiltfield(), variable = "journal",
@@ -441,20 +445,18 @@ insert_citations <- function() {
 
 # Function to generate dynamic filters in user interface
 make_filter <- function(dataset, variable, id, label) {
-  renderUI({
-    choices <- sort(
-      as.character(unique(c(unlist(dataset[, variable]), ""))),
-      decreasing = FALSE
-    )
-    selectInput(
-      id,
-      label,
-      choices = choices,
-      selected = "",
-      multiple = FALSE,
-      width = "100%"
-    )
-  })
+  choices <- sort(
+    as.character(unique(c(unlist(dataset[, variable]), ""))),
+    decreasing = FALSE
+  )
+  selectInput(
+    id,
+    label,
+    choices = choices,
+    selected = "",
+    multiple = FALSE,
+    width = "100%"
+  )
 }
 
 

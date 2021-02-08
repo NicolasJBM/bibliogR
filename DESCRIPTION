@@ -20,7 +20,7 @@ VignetteBuilder: knitr
 Imports:
   miniUI,
   shiny,
-  shinythemes,
+  bslib,
   dplyr,
   stringr,
   stringi,

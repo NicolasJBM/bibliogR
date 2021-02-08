@@ -8,6 +8,8 @@
 #' @importFrom miniUI miniTabstripPanel
 #' @importFrom miniUI miniTabPanel
 #' @importFrom miniUI miniContentPanel
+#' @importFrom bslib bs_theme
+#' @importFrom bslib font_google
 #' @importFrom shiny fillCol
 #' @importFrom shiny fillRow
 #' @importFrom shiny icon
@@ -76,7 +78,14 @@ combine_references <- function() {
   options(shiny.maxRequestSize = 500 * 1024^2)
 
   ui <- miniPage(
-    theme = shinythemes::shinytheme("flatly"),
+    theme = bslib::bs_theme(
+      bootswatch = "flatly",
+      base_font = bslib::font_google("Open Sans"),
+      "enable-gradients" = FALSE,
+      "enable-shadows" = TRUE,
+      spacer = "0.5rem"
+    ),
+    
     tags$head(tags$style(
       HTML(".shiny-notification {
               position:fixed;top: 30%;left: 0%;right: 0%;

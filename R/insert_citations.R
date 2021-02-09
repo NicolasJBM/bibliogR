@@ -152,7 +152,8 @@ insert_citations <- function() {
             ),
             actionButton("insert", "Insert",
               width = 150,
-              icon("paper-plane")
+              icon("quote-right"),
+              style = 'background-color: #009933; color: #FFF;'
             ),
             DT::dataTableOutput("reflist", width = "100%", height = "100%")
           )

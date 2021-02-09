@@ -85,7 +85,7 @@ combine_references <- function() {
       "enable-shadows" = TRUE,
       spacer = "0.5rem"
     ),
-    
+
     tags$head(tags$style(
       HTML(".shiny-notification {
               position:fixed;top: 30%;left: 0%;right: 0%;
@@ -100,26 +100,96 @@ combine_references <- function() {
         "Import",
         icon = icon("file-upload"),
         miniContentPanel(
-          shiny::fileInput(
-            "references",
-            "Select the initial list of references:",
-            accept = c(".xlsx"),
-            multiple = FALSE
-          ),
+          fillCol(
+            flex = c(1, 1, 1),
+            fillRow(
+              flex = c(1, 1),
+              shiny::fileInput(
+                "references",
+                "Initial references (xlsx):",
+                accept = c(".xlsx"),
+                multiple = FALSE,
+                width = "100%"
+              ),
 
-          shiny::fileInput(
-            "files",
-            "Select the files containing the new references:",
-            accept = c(".bib"),
-            multiple = TRUE
+              shiny::actionButton(
+                "importxlsx",
+                "Import",
+                icon = icon("upload"),
+                width = "100%",
+                style =
+                  "margin-top:30px; background-color: #009933; color: #FFF;"
+              )
+            ),
+
+            tags$hr(),
+
+            fillRow(
+              flex = c(1, 1),
+              shiny::fileInput(
+                "files",
+                "Additional references (bib):",
+                accept = c(".bib"),
+                multiple = TRUE,
+                width = "100%"
+              ),
+
+              shiny::actionButton(
+                "importbib",
+                "Import",
+                icon = icon("upload"),
+                width = "100%",
+                style =
+                  "margin-top:30px; background-color: #009933; color: #FFF;"
+              )
+            )
           )
         )
       ),
+
       miniTabPanel(
-        "Select",
-        icon = icon("check"),
+        "Edit",
+        icon = icon("edit"),
         miniContentPanel(
-          rhandsontable::rHandsontableOutput("display_matches")
+          fillCol(
+            flex = c(10, 2),
+            rhandsontable::rHandsontableOutput("display_additional"),
+            shiny::actionButton(
+              "update",
+              "Update",
+              icon = icon("pencil-alt"),
+              width = "100%",
+              style =
+                "margin-top:30px; background-color: #009933; color: #FFF;"
+            )
+          )
+        )
+      ),
+
+      miniTabPanel(
+        "Duplicates",
+        icon = icon("clone"),
+        miniContentPanel(
+          fillCol(
+            flex = c(1, 9, 2),
+            shiny::actionButton(
+              "searchdupl",
+              "Scan",
+              icon = icon("search"),
+              width = "100%",
+              style =
+                "margin-top:30px; background-color: #330099; color: #FFF;"
+            ),
+            rhandsontable::rHandsontableOutput("display_matches"),
+            shiny::actionButton(
+              "filterselection",
+              "Filter",
+              icon = icon("filter"),
+              width = "100%",
+              style =
+                "margin-top:30px; background-color: #990033; color: #FFF;"
+            )
+          )
         )
       )
     )
@@ -140,36 +210,68 @@ combine_references <- function() {
     disttitle <- NULL
     distauth <- NULL
 
+    # Create reactive values
+    tables <- reactiveValues()
+    tables$references <- NA
+    tables$additional <- NA
+    tables$matches <- NA
+
     # Import the files to be combined
-    references <- reactive({
+    observeEvent(input$importxlsx, {
       if (!is.null(input$references)) {
-        readxl::read_excel(input$references$datapath[[1]], col_types = "text")
+        withProgress(message = "Importing...", value = 0.5, {
+          tables$references <- readxl::read_excel(
+            input$references$datapath[[1]],
+            col_types = "text"
+          )
+        })
       }
     })
 
-    new_references <- reactive({
+    observeEvent(input$importbib, {
       if (!is.null(input$files)) {
-        input$files %>%
-          dplyr::select(file = datapath) %>%
-          dplyr::mutate(import = furrr::future_map(
-            file, bibliogR::get_new_references
-          )) %>%
-          tidyr::unnest(import) %>%
-          dplyr::select(-file) %>%
-          tibble::rownames_to_column("tmpkey")
+        withProgress(message = "Importing...", value = 0.5, {
+          tables$additional <- input$files %>%
+            dplyr::select(file = datapath) %>%
+            dplyr::mutate(import = furrr::future_map(
+              file, bibliogR::get_new_references
+            )) %>%
+            tidyr::unnest(import) %>%
+            dplyr::select(-file) %>%
+            tibble::rownames_to_column("tmpkey")
+        })
       }
+    })
+
+    # Display and update additional references
+    output$display_additional <- rhandsontable::renderRHandsontable({
+      rhandsontable::rhandsontable(
+        tables$additional,
+        width = "100%",
+        height = 450
+      ) %>%
+        rhandsontable::hot_context_menu(
+          allowRowEdit = FALSE,
+          allowColEdit = FALSE
+        )
+    })
+
+    observeEvent(input$update, {
+      tables$additional <- suppressWarnings(
+        rhandsontable::hot_to_r(input$display_additional)
+      )
     })
 
     # Flag potential duplicates
-    matches <- reactive({
+    observeEvent(input$searchdupl, {
       withProgress(
         message = "Find potential matches",
         detail = "This may take a while...", {
-          incProgress(amount = 0, message = "Import and simplify;")
+          incProgress(amount = 0, message = "Search for potential duplicates;")
 
           future::plan("multisession")
 
-          new <- new_references() %>%
+          new <- tables$additional %>%
             dplyr::select(tmpkey, journal, year, title, author) %>%
             dplyr::mutate(
               year = as.numeric(year),
@@ -184,11 +286,11 @@ combine_references <- function() {
             ) %>%
             as.data.frame()
 
-          old <- references() %>%
+          old <- tables$references %>%
             dplyr::select(key, journal, year, title, author) %>%
             dplyr::mutate(year = as.numeric(year)) %>%
             dplyr::filter(
-              journal %in% unique(new_references()$journal),
+              journal %in% unique(tables$references$journal),
               year %in% unique(new$year)
             ) %>%
             dplyr::mutate(
@@ -208,7 +310,7 @@ combine_references <- function() {
 
           for (i in seq_len(nbrref)) {
             message <- paste0(
-              "Identifying potential matches for reference ",
+              "Processing reference ",
               i,
               " out of ",
               nbrref,
@@ -231,46 +333,65 @@ combine_references <- function() {
         dplyr::bind_rows() %>%
         dplyr::filter(tmpkey != "") %>%
         dplyr::mutate(keep = TRUE) %>%
-        dplyr::select(keep, dplyr::everything())
-      match
+        dplyr::select(keep, dplyr::everything()) %>%
+        dplyr::arrange(
+          disttitle,
+          distauth
+        )
+
+      if (nrow(match) == 0) {
+        match <- tables$additional %>%
+          dplyr::select(tmpkey, title, author, year) %>%
+          dplyr::mutate(keep = TRUE) %>%
+          dplyr::select(keep, dplyr::everything())
+      }
+
+      tables$matches <- match
     })
 
-
     output$display_matches <- rhandsontable::renderRHandsontable({
-      dplyr::arrange(
-        matches(),
-        disttitle,
-        distauth
-      ) %>%
-        rhandsontable::rhandsontable(
-          height = 600,
-          width = "100%",
-          stretchH = "all"
-        ) %>%
-        rhandsontable::hot_context_menu(
-          allowRowEdit = FALSE,
-          allowColEdit = FALSE
-        )
+      if (length(tables$matches) > 1) {
+        tables$matches %>%
+          rhandsontable::rhandsontable(
+            height = 400,
+            width = "100%",
+            stretchH = "right"
+          ) %>%
+          rhandsontable::hot_context_menu(
+            allowRowEdit = FALSE,
+            allowColEdit = FALSE
+          )
+      }
+    })
+
+    observeEvent(input$filterselection, {
+      keep <- rhandsontable::hot_to_r(input$display_matches) %>%
+        dplyr::filter(keep == TRUE)
+
+      tables$match <- keep
+
+      complement <- tables$additional %>%
+        dplyr::filter(tmpkey %in% keep$tmpkey)
+
+      tables$additional <- complement
     })
 
 
     observeEvent(input$done, {
-      keep <- rhandsontable::hot_to_r(input$display_matches) %>%
-        dplyr::filter(keep == TRUE) %>%
-        dplyr::select(tmpkey) %>%
-        unlist()
-
-      complement <- new_references() %>%
-        dplyr::filter(tmpkey %in% keep) %>%
+      complement <- tables$additional %>%
         dplyr::select(-tmpkey)
 
       references_new <- bibliogR::add_new_references(
         complement = complement,
-        references = references()
+        references = tables$references
       )
 
-      print("Saving references: the gadget will stop when this is done.")
-      WriteXLS::WriteXLS(references_new, "references_new.xlsx")
+      withProgress(message = "Write the Excel file...", value = 0.5, {
+        WriteXLS::WriteXLS(
+          references_new,
+          paste0("references_", Sys.Date(), ".xlsx")
+        )
+      })
 
       stopApp()
     })

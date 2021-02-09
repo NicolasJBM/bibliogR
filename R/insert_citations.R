@@ -18,6 +18,8 @@
 #' @importFrom shiny numericInput
 #' @importFrom shiny textAreaInput
 #' @importFrom shiny selectInput
+#' @importFrom shiny selectizeInput
+#' @importFrom shiny updateSelectizeInput
 #' @importFrom shiny sliderInput
 #' @importFrom shiny checkboxInput
 #' @importFrom shiny downloadButton
@@ -100,7 +102,12 @@ insert_citations <- function() {
       spacer = "0.5rem"
     ),
 
-    tags$head(tags$style(
+    tags$head(
+      tags$style(
+        type = "text/css",
+        "body {font-size: 0.75em;} "
+      ),
+      tags$style(
       HTML(".shiny-notification {
               position:fixed;top: 30%;left: 0%;right: 0%;
            }")
@@ -117,7 +124,16 @@ insert_citations <- function() {
           tags$hr(),
           fluidRow(
             column(4, textInput("slctkey", "Key:", value = "")),
-            column(8, uiOutput("filtauthors"))
+            column(
+              8,
+              selectizeInput(
+                "slctauthor",
+                "Authors:",
+                choices = NULL,
+                multiple = TRUE,
+                width = "100%"
+              )   
+            )
           ),
           uiOutput("filtperiod"),
           fluidRow(
@@ -138,9 +154,9 @@ insert_citations <- function() {
         icon = icon("list"),
         miniContentPanel(
           fillCol(
-            flex = c(1, 1, 8),
+            flex = c(2, 8),
             fluidRow(
-              column(8, uiOutput("selection", width = "100%")),
+              column(6, uiOutput("selection", width = "100%")),
               column(2, selectInput(
                 "format",
                 "Format:",
@@ -148,12 +164,17 @@ insert_citations <- function() {
                 selected = "create",
                 multiple = FALSE
               )),
-              column(2, textInput("pages", "Pages:", value = ""))
-            ),
-            actionButton("insert", "Insert",
-              width = 150,
-              icon("quote-right"),
-              style = "background-color: #009933; color: #FFF;"
+              column(2, textInput("pages", "Pages:", value = "")),
+              column(
+                2,
+                actionButton(
+                  "insert", "Insert",
+                  width = "100%",
+                  icon("quote-right"),
+                  style =
+                    "background-color: #009933; color: #FFF; margin-top: 25px"
+                )
+              )
             ),
             DT::dataTableOutput("reflist", width = "100%", height = "100%")
           )
@@ -184,8 +205,27 @@ insert_citations <- function() {
     # Load the local database of references
     # (imported with function import_references)
     load(paste0(find.package("bibliogR"), "/references.RData"))
-
-
+    observe({
+      authors <- references$author %>%
+        str_split(" ") %>%
+        unlist() %>%
+        setdiff("and") %>%
+        str_remove_all(",") %>%
+        str_remove_all("\\.") %>%
+        unique() %>%
+        sort() %>%
+        stringr::str_remove_all("[-0-9]")
+      
+      authors <- authors[nchar(authors) > 1]
+      
+      updateSelectizeInput(
+        session,
+        "slctauthor",
+        choices = authors,
+        server = TRUE
+      )
+    })
+    
     # Prepare reactive values
     values <- reactiveValues()
 
@@ -193,22 +233,12 @@ insert_citations <- function() {
       message = "Retrieve the database of references",
       detail = "This may take a while...", {
         values$references <- references
-        incProgress(1 / 4)
-        values$authors <- references$author %>%
-          str_split(" ") %>%
-          unlist() %>%
-          setdiff("and") %>%
-          str_remove_all(",") %>%
-          str_remove_all("\\.") %>%
-          unique() %>%
-          sort() %>%
-          c("")
-        incProgress(1 / 4)
+        incProgress(1 / 3)
         values$years <- c(
           min(na.omit(as.numeric(references$year))),
           max(na.omit(as.numeric(references$year)))
         )
-        incProgress(1 / 4)
+        incProgress(1 / 3)
       }
     )
 
@@ -229,17 +259,6 @@ insert_citations <- function() {
     })
 
     # Authors
-    output$filtauthors <- renderUI({
-      choices <- values$authors
-      selectInput(
-        "slctauthor",
-        "Authors:",
-        choices = choices,
-        selected = "",
-        multiple = TRUE,
-        width = "100%"
-      )
-    })
     afterfiltauthors <- reactive({
       if (is.null(input$slctauthor)) {
         filter <- NULL

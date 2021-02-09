@@ -70,7 +70,7 @@ import_references <- function() {
       "enable-shadows" = TRUE,
       spacer = "0.5rem"
     ),
-    
+
     tags$head(tags$style(
       HTML(".shiny-notification {
               position:fixed;top: 30%;left: 0%;right: 0%;

@@ -85,9 +85,13 @@ get_new_references <- function(file) {
       ),
       pages = stringr::str_replace_all(pages, " - ", "--"),
       keywords = furrr::future_map_chr(
-        keywords, clean_string, simplify = FALSE),
+        keywords, clean_string,
+        simplify = FALSE
+      ),
       abstract = furrr::future_map_chr(
-        abstract, clean_string, simplify = FALSE),
+        abstract, clean_string,
+        simplify = FALSE
+      ),
       doi = stringr::str_replace_all(doi, "https://doi.org/", "")
     ) %>%
     dplyr::mutate(title = stringr::str_to_title(title))

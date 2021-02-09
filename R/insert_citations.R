@@ -99,7 +99,7 @@ insert_citations <- function() {
       "enable-shadows" = TRUE,
       spacer = "0.5rem"
     ),
-    
+
     tags$head(tags$style(
       HTML(".shiny-notification {
               position:fixed;top: 30%;left: 0%;right: 0%;
@@ -153,7 +153,7 @@ insert_citations <- function() {
             actionButton("insert", "Insert",
               width = 150,
               icon("quote-right"),
-              style = 'background-color: #009933; color: #FFF;'
+              style = "background-color: #009933; color: #FFF;"
             ),
             DT::dataTableOutput("reflist", width = "100%", height = "100%")
           )

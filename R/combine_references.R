@@ -368,7 +368,7 @@ combine_references <- function() {
       keep <- rhandsontable::hot_to_r(input$display_matches) %>%
         dplyr::filter(keep == TRUE)
 
-      tables$match <- keep
+      tables$matches <- keep
 
       complement <- tables$additional %>%
         dplyr::filter(tmpkey %in% keep$tmpkey)
@@ -378,15 +378,19 @@ combine_references <- function() {
 
 
     observeEvent(input$done, {
-      complement <- tables$additional %>%
-        dplyr::select(-tmpkey)
+      withProgress(message = "Combine and export...", value = 0.33, {
+        complement <- tables$additional %>%
+          dplyr::select(-tmpkey)
 
-      references_new <- bibliogR::add_new_references(
-        complement = complement,
-        references = tables$references
-      )
+        references_new <- bibliogR::add_new_references(
+          complement = complement,
+          references = tables$references
+        )
 
-      withProgress(message = "Write the Excel file...", value = 0.5, {
+        incProgress(0.33)
+
+        print("Now saving the file...")
+
         WriteXLS::WriteXLS(
           references_new,
           paste0("references_", Sys.Date(), ".xlsx")

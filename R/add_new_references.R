@@ -10,6 +10,8 @@
 #' @importFrom dplyr bind_rows
 #' @importFrom dplyr mutate_all
 #' @importFrom utils combn
+#' @importFrom utils txtProgressBar
+#' @importFrom utils setTxtProgressBar
 #' @export
 
 
@@ -50,16 +52,10 @@ add_new_references <- function(complement, references) {
   complement$key <- ""
   complement$order <- ""
   addition <- nrow(complement)
+  progress_bar <- utils::txtProgressBar(min = 0, max = addition, style = 3, char = "=")
 
   for (i in 1:addition) {
-    print(paste0(
-      "Add reference ",
-      i,
-      " out of ",
-      addition,
-      " (",
-      ceiling(100 * i / addition), "%)"
-    ))
+    utils::setTxtProgressBar(progress_bar, value = i)
     keys <- references$key
     addref <- complement[i, ]
     addref$key <- make_key(addref$author, addref$year, keys)
@@ -67,5 +63,6 @@ add_new_references <- function(complement, references) {
   }
 
   references$order <- seq_len(nrow(references))
+  close(progress_bar)
   return(references)
 }

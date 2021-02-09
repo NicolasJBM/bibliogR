@@ -401,5 +401,5 @@ combine_references <- function() {
     })
   }
 
-  runGadget(ui, server, viewer = paneViewer())
+  runGadget(ui, server, viewer = paneViewer(minHeight = "maximize"))
 }

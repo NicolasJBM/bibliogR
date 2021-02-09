@@ -10,7 +10,7 @@ combine_references()
 An Excel file with the new complete reference list.
 }
 \description{
-Application gathering references from different sources, identifying potential duplicates, and combining them in a signle reference file.
+Application gathering references from different sources, identifying potential duplicates, and combining them in a single reference file.
 }
 \author{
 Nicolas Mangin

@@ -1,7 +1,7 @@
 #' @name combine_references
 #' @title Import References and Combine Them
 #' @author Nicolas Mangin
-#' @description Application gathering references from different sources, identifying potential duplicates, and combining them in a signle reference file.
+#' @description Application gathering references from different sources, identifying potential duplicates, and combining them in a single reference file.
 #' @return An Excel file with the new complete reference list.
 #' @importFrom miniUI miniPage
 #' @importFrom miniUI gadgetTitleBar

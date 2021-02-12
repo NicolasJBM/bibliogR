@@ -45,14 +45,13 @@ gen_bib <- function(wdir = NULL,
   abstract <- NULL
   Freq <- NULL
   references <- NULL
-
-  if (!dir.exists("dat")) dir.create("dat")
   
   # Obtain references
   load(paste0(find.package("bibliogR"), "/references.RData"))
 
   # Gather citations
   if (!is.null(wdir)) setwd(wdir)
+  if (!dir.exists("dat")) dir.create("dat")
 
   if (is.null(keys)) {
     files <- list.files(getwd())

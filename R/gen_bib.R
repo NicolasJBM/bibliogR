@@ -46,6 +46,8 @@ gen_bib <- function(wdir = NULL,
   Freq <- NULL
   references <- NULL
 
+  if (!dir.exists("dat")) dir.create("dat")
+  
   # Obtain references
   load(paste0(find.package("bibliogR"), "/references.RData"))
 
@@ -117,6 +119,6 @@ gen_bib <- function(wdir = NULL,
     bib <- bib %>%
       split(f = bib$key) %>%
       as.BibEntry() %>%
-      WriteBib(file = "ref.bib", append = FALSE)
+      WriteBib(file = "dat/ref.bib", append = FALSE)
   }
 }

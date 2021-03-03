@@ -191,7 +191,25 @@ combine_references <- function() {
             )
           )
         )
+      ),
+      
+      miniTabPanel(
+        "Export",
+        icon = icon("file-download"),
+        miniContentPanel(
+          fillRow(
+            shiny::actionButton(
+              "combine",
+              "Combine and export",
+              icon = icon("download"),
+              width = "100%",
+              style =
+                "margin-top:30px; background-color: #009933; color: #FFF;"
+            )
+          )
+        )
       )
+      
     )
   )
 
@@ -375,28 +393,30 @@ combine_references <- function() {
 
       tables$additional <- complement
     })
-
-
-    observeEvent(input$done, {
+    
+    observeEvent(input$combine, {
       withProgress(message = "Combine and export...", value = 0.33, {
         complement <- tables$additional %>%
           dplyr::select(-tmpkey)
-
+        
         references_new <- bibliogR::add_new_references(
           complement = complement,
           references = tables$references
         )
-
+        
         incProgress(0.33)
-
+        
         print("Now saving the file...")
-
+        
         WriteXLS::WriteXLS(
           references_new,
           paste0("references_", Sys.Date(), ".xlsx")
         )
       })
+    })
 
+
+    observeEvent(input$done, {
       stopApp()
     })
   }

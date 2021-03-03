@@ -75,10 +75,13 @@
 #' @importFrom tibble rownames_to_column
 #' @export
 
+
+source("R/import_module.R")
+
 combine_references <- function() {
   options(shiny.maxRequestSize = 500 * 1024^2)
 
-  ui <- miniPage(
+  ui <- miniUI::miniPage(
     theme = bslib::bs_theme(
       bootswatch = "flatly",
       base_font = bslib::font_google("Open Sans"),
@@ -93,7 +96,7 @@ combine_references <- function() {
            }")
     )),
 
-    gadgetTitleBar("Combine References"),
+    gadgetTitleBar("Combine Reference Files"),
     miniTabstripPanel(
 
       # Panel where the author selects references in the filtered list
@@ -103,46 +106,15 @@ combine_references <- function() {
         miniContentPanel(
           fillCol(
             flex = c(1, 1, 1),
-            fillRow(
-              flex = c(1, 1),
-              shiny::fileInput(
-                "references",
-                "Initial references (xlsx):",
-                accept = c(".xlsx"),
-                multiple = FALSE,
-                width = "100%"
-              ),
-
-              shiny::actionButton(
-                "importxlsx",
-                "Import",
-                icon = icon("upload"),
-                width = "100%",
-                style =
-                  "margin-top:30px; background-color: #009933; color: #FFF;"
-              )
-            ),
-
-            tags$hr(),
-
-            fillRow(
-              flex = c(1, 1),
-              shiny::fileInput(
-                "files",
-                "Additional references (bib):",
-                accept = c(".bib"),
-                multiple = TRUE,
-                width = "100%"
-              ),
-
-              shiny::actionButton(
-                "importbib",
-                "Import",
-                icon = icon("upload"),
-                width = "100%",
-                style =
-                  "margin-top:30px; background-color: #009933; color: #FFF;"
-              )
+            import_ui("initial", "Select the initial set of references"),
+            import_ui("additional", "Select the additional set of references"),
+            actionButton(
+              "import",
+              "Import",
+              width = "100%",
+              icon("upload"),
+              style =
+                "background-color: #009933; color: #FFF;"
             )
           )
         )
@@ -213,55 +185,37 @@ combine_references <- function() {
     )
   )
 
-
   server <- function(input, output, session) {
 
-    # Bind variables for dplyr
-    datapath <- NULL
+    # Bind variables
+    author <- NULL
+    distauth <- NULL
+    disttitle <- NULL
     journal <- NULL
+    key <- NULL
+    title <- NULL
     tmpkey <- NULL
     year <- NULL
-    author <- NULL
-    title <- NULL
-    import <- NULL
-    key <- NULL
-    disttitle <- NULL
-    distauth <- NULL
 
     # Create reactive values
     tables <- reactiveValues()
     tables$references <- NA
     tables$additional <- NA
-    tables$matches <- NA
 
-    # Import the files to be combined
-    observeEvent(input$importxlsx, {
-      req(input$references)
-      withProgress(message = "Importing...", value = 0.5, {
-        tables$references <- readxl::read_excel(
-          input$references$datapath[[1]],
-          col_types = "text"
-        )
-      })
-    })
-
-    observeEvent(input$importbib, {
-      req(input$files)
-      withProgress(message = "Importing...", value = 0.5, {
-        tables$additional <- input$files %>%
-          dplyr::select(file = datapath) %>%
-          dplyr::mutate(import = furrr::future_map(
-            file, bibliogR::get_new_references
-          )) %>%
-          tidyr::unnest(import) %>%
-          dplyr::select(-file) %>%
+    # Import tables upon request
+    shiny::observeEvent(input$import, {
+      shiny::withProgress(message = "Importing...", value = 0.3, {
+        tables$references <- import_server("initial")
+        shiny::incProgress(0.3)
+        tables$additional <- import_server("additional") %>%
+          bibliogR::clean_additional_references() %>%
           tibble::rownames_to_column("tmpkey")
       })
     })
 
     # Display and update additional references
     output$display_additional <- rhandsontable::renderRHandsontable({
-      if (!is.na(tables$additional)) {
+      if (length(tables$additional) > 1) {
         rhandsontable::rhandsontable(
           tables$additional,
           width = "100%",
@@ -415,11 +369,10 @@ combine_references <- function() {
       })
     })
 
-
     observeEvent(input$done, {
       stopApp()
     })
   }
 
-  runGadget(ui, server, viewer = paneViewer(minHeight = "maximize"))
+  runGadget(ui, server, viewer = paneViewer())
 }

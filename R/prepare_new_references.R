@@ -1,8 +1,8 @@
-#' @name get_new_references
+#' @name prepare_new_references
 #' @title Prepare New References for Combination
 #' @author Nicolas Mangin
-#' @description Import and format references from bibtex files.
-#' @param file  character. Path to the .bib file.
+#' @description Format references to allow their combination.
+#' @param addref  Tibble. References list to clean.
 #' @return A list of references which can be appended to the main file.
 #' @importFrom stringr str_extract_all
 #' @importFrom stringr str_replace_all
@@ -20,7 +20,7 @@
 #' @importFrom RefManageR ReadBib
 #' @export
 
-get_new_references <- function(file) {
+prepare_new_references <- function(addref) {
 
   # Bind variables
   author <- NULL
@@ -33,10 +33,6 @@ get_new_references <- function(file) {
   doi <- NULL
   year <- NULL
 
-  # Import the file
-  import <- RefManageR::ReadBib(file = file) %>%
-    as.data.frame()
-
   # Add missing variables
   info <- c(
     "key", "order", "bibtype", "author", "title", "journal",
@@ -45,13 +41,13 @@ get_new_references <- function(file) {
     "editor", "address", "chapter", "edition", "isbn", "comment",
     "note"
   )
-  missing <- setdiff(info, names(import))
+  missing <- setdiff(info, names(addref))
   for (name in missing) {
-    import[, name] <- ""
+    addref[, name] <- ""
   }
 
   # Clean the references
-  import <- import %>%
+  addref <- addref %>%
     tidyr::replace_na(list(keywords = "", subjects = "", abstract = "")) %>%
     dplyr::mutate(
       title = furrr::future_map_chr(title, clean_string, simplify = FALSE),
@@ -97,8 +93,8 @@ get_new_references <- function(file) {
     dplyr::mutate(title = stringr::str_to_title(title))
 
   # Enforce proper order of variables
-  import <- import %>%
+  addref <- addref %>%
     dplyr::select(dplyr::all_of(info))
 
-  return(import)
+  return(addref)
 }

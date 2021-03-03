@@ -75,9 +75,6 @@
 #' @importFrom tibble rownames_to_column
 #' @export
 
-
-source("R/import_module.R")
-
 combine_references <- function() {
   options(shiny.maxRequestSize = 500 * 1024^2)
 
@@ -208,7 +205,7 @@ combine_references <- function() {
         tables$references <- import_server("initial")
         shiny::incProgress(0.3)
         tables$additional <- import_server("additional") %>%
-          bibliogR::clean_additional_references() %>%
+          bibliogR::prepare_new_references() %>%
           tibble::rownames_to_column("tmpkey")
       })
     })
@@ -374,5 +371,5 @@ combine_references <- function() {
     })
   }
 
-  runGadget(ui, server, viewer = paneViewer())
+  runGadget(ui, server, viewer = paneViewer(minHeight = "maximize"))
 }

@@ -3,6 +3,9 @@
 \name{combine_references}
 \alias{combine_references}
 \title{Import References and Combine Them}
+\usage{
+combine_references()
+}
 \value{
 An Excel file with the new complete reference list.
 }

@@ -108,10 +108,11 @@ insert_citations <- function() {
         "body {font-size: 0.75em;} "
       ),
       tags$style(
-      HTML(".shiny-notification {
+        HTML(".shiny-notification {
               position:fixed;top: 30%;left: 0%;right: 0%;
            }")
-    )),
+      )
+    ),
 
     gadgetTitleBar("Insert citations"),
     miniTabstripPanel(
@@ -132,7 +133,7 @@ insert_citations <- function() {
                 choices = NULL,
                 multiple = TRUE,
                 width = "100%"
-              )   
+              )
             )
           ),
           uiOutput("filtperiod"),
@@ -215,9 +216,9 @@ insert_citations <- function() {
         unique() %>%
         sort() %>%
         stringr::str_remove_all("[-0-9]")
-      
+
       authors <- authors[nchar(authors) > 1]
-      
+
       updateSelectizeInput(
         session,
         "slctauthor",
@@ -225,7 +226,7 @@ insert_citations <- function() {
         server = TRUE
       )
     })
-    
+
     # Prepare reactive values
     values <- reactiveValues()
 

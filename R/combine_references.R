@@ -55,6 +55,7 @@
 #' @importFrom shiny eventReactive
 #' @importFrom shiny dialogViewer
 #' @importFrom shiny paneViewer
+#' @importFrom shiny req
 #' @importFrom dplyr mutate
 #' @importFrom dplyr select
 #' @importFrom dplyr left_join
@@ -204,7 +205,7 @@ combine_references <- function() {
               icon = icon("download"),
               width = "100%",
               style =
-                "margin-top:30px; background-color: #009933; color: #FFF;"
+                "margin-top:30px; background-color: #993300; color: #FFF;"
             )
           )
         )
@@ -236,42 +237,42 @@ combine_references <- function() {
 
     # Import the files to be combined
     observeEvent(input$importxlsx, {
-      if (!is.null(input$references)) {
-        withProgress(message = "Importing...", value = 0.5, {
-          tables$references <- readxl::read_excel(
-            input$references$datapath[[1]],
-            col_types = "text"
-          )
-        })
-      }
+      req(input$references)
+      withProgress(message = "Importing...", value = 0.5, {
+        tables$references <- readxl::read_excel(
+          input$references$datapath[[1]],
+          col_types = "text"
+        )
+      })
     })
 
     observeEvent(input$importbib, {
-      if (!is.null(input$files)) {
-        withProgress(message = "Importing...", value = 0.5, {
-          tables$additional <- input$files %>%
-            dplyr::select(file = datapath) %>%
-            dplyr::mutate(import = furrr::future_map(
-              file, bibliogR::get_new_references
-            )) %>%
-            tidyr::unnest(import) %>%
-            dplyr::select(-file) %>%
-            tibble::rownames_to_column("tmpkey")
-        })
-      }
+      req(input$files)
+      withProgress(message = "Importing...", value = 0.5, {
+        tables$additional <- input$files %>%
+          dplyr::select(file = datapath) %>%
+          dplyr::mutate(import = furrr::future_map(
+            file, bibliogR::get_new_references
+          )) %>%
+          tidyr::unnest(import) %>%
+          dplyr::select(-file) %>%
+          tibble::rownames_to_column("tmpkey")
+      })
     })
 
     # Display and update additional references
     output$display_additional <- rhandsontable::renderRHandsontable({
-      rhandsontable::rhandsontable(
-        tables$additional,
-        width = "100%",
-        height = 450
-      ) %>%
-        rhandsontable::hot_context_menu(
-          allowRowEdit = FALSE,
-          allowColEdit = FALSE
-        )
+      if (!is.na(tables$additional)){
+        rhandsontable::rhandsontable(
+          tables$additional,
+          width = "100%",
+          height = 450
+        ) %>%
+          rhandsontable::hot_context_menu(
+            allowRowEdit = FALSE,
+            allowColEdit = FALSE
+          )
+      }
     })
 
     observeEvent(input$update, {

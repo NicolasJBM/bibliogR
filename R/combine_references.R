@@ -193,7 +193,7 @@ combine_references <- function() {
           )
         )
       ),
-      
+
       miniTabPanel(
         "Export",
         icon = icon("file-download"),
@@ -210,7 +210,6 @@ combine_references <- function() {
           )
         )
       )
-      
     )
   )
 
@@ -262,7 +261,7 @@ combine_references <- function() {
 
     # Display and update additional references
     output$display_additional <- rhandsontable::renderRHandsontable({
-      if (!is.na(tables$additional)){
+      if (!is.na(tables$additional)) {
         rhandsontable::rhandsontable(
           tables$additional,
           width = "100%",
@@ -394,21 +393,21 @@ combine_references <- function() {
 
       tables$additional <- complement
     })
-    
+
     observeEvent(input$combine, {
       withProgress(message = "Combine and export...", value = 0.33, {
         complement <- tables$additional %>%
           dplyr::select(-tmpkey)
-        
+
         references_new <- bibliogR::add_new_references(
           complement = complement,
           references = tables$references
         )
-        
+
         incProgress(0.33)
-        
+
         print("Now saving the file...")
-        
+
         WriteXLS::WriteXLS(
           references_new,
           paste0("references_", Sys.Date(), ".xlsx")

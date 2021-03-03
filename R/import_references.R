@@ -86,7 +86,7 @@ import_references <- function() {
         icon = icon("list"),
         miniContentPanel(
           fillRow(
-            flex = c(4,2),
+            flex = c(4, 2),
             shiny::fileInput(
               "references", "Select on your drive the file references.xlsx:",
               accept = c(".xlsx"),
@@ -110,7 +110,6 @@ import_references <- function() {
 
 
   server <- function(input, output, session) {
-    
     observeEvent(input$import, {
       withProgress(message = "References", value = 0, {
         incProgress(0 / 3, detail = "Import database...")
@@ -122,19 +121,19 @@ import_references <- function() {
         } else {
           load(paste0(find.package("bibliogR"), "/references.RData"))
         }
-        
+
         incProgress(1 / 3, detail = "Write database...")
         save(references, file = paste0(
           find.package("bibliogR"), "/references.RData"
         ))
-        
+
         incProgress(1 / 3, detail = "Compress database...")
         tools::resaveRdaFiles(paste0(
           find.package("bibliogR"), "/references.RData"
         ))
       })
     })
-    
+
     observeEvent(input$done, {
       stopApp()
     })

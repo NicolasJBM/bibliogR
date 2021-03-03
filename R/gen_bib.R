@@ -45,7 +45,8 @@ gen_bib <- function(wdir = NULL,
   abstract <- NULL
   Freq <- NULL
   references <- NULL
-  
+  text <- NULL
+
   # Obtain references
   load(paste0(find.package("bibliogR"), "/references.RData"))
 
@@ -62,7 +63,7 @@ gen_bib <- function(wdir = NULL,
     if (nrow(rmdfiles) > 0) {
       content <- rmdfiles %>%
         dplyr::mutate(text = furrr::future_map(rmdfiles, read_file)) %>%
-        tidyr::unnest()
+        tidyr::unnest(text)
       content <- paste(as.character(unlist(content$text)), collaspe = " ")
     }
 

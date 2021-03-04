@@ -63,6 +63,8 @@
 
 import_references <- function() {
 
+  options(shiny.maxRequestSize = 500 * 1024^2)
+
   ui <- miniPage(
     theme = bslib::bs_theme(
       bootswatch = "flatly",

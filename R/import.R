@@ -55,6 +55,8 @@
 #' @importFrom shiny eventReactive
 #' @importFrom shiny dialogViewer
 #' @importFrom shiny paneViewer
+#' @importFrom shiny showModal
+#' @importFrom shiny modalDialog
 #' @importFrom readxl read_excel
 #' @export
 
@@ -130,6 +132,13 @@ import <- function() {
         incProgress(1 / 3, detail = "Compress database...")
         tools::resaveRdaFiles(paste0(
           find.package("bibliogR"), "/references.RData"
+        ))
+        
+        showModal(modalDialog(
+          title = "Importation complete",
+          "Your references are integrated and can now leave the application.",
+          easyClose = TRUE,
+          footer = NULL
         ))
       })
     })

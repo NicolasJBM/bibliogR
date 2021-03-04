@@ -56,6 +56,9 @@
 #' @importFrom shiny dialogViewer
 #' @importFrom shiny paneViewer
 #' @importFrom shiny req
+#' @importFrom shiny paneViewer
+#' @importFrom shiny showModal
+#' @importFrom shiny modalDialog
 #' @importFrom dplyr mutate
 #' @importFrom dplyr select
 #' @importFrom dplyr left_join
@@ -363,6 +366,13 @@ combine <- function() {
           references_new,
           paste0("references_", Sys.Date(), ".xlsx")
         )
+        
+        showModal(modalDialog(
+          title = "Combination and exportation complete",
+          "You can now leave the application.",
+          easyClose = TRUE,
+          footer = NULL
+        ))
       })
     })
 

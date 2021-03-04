@@ -11,7 +11,6 @@
 #' @importFrom stringr str_replace
 #' @importFrom stringr str_remove_all
 #' @importFrom dplyr %>%
-#' @export
 
 
 format_authors <- function(author) {

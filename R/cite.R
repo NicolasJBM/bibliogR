@@ -1,4 +1,4 @@
-#' @name insert_citations
+#' @name cite
 #' @title Insert Citations in Text
 #' @author Nicolas Mangin
 #' @description Gadget for the selection and insertion of citations in Rmarkdown documents.
@@ -90,7 +90,7 @@
 #' @importFrom rstudioapi insertText
 #' @export
 
-insert_citations <- function() {
+cite <- function() {
   options(shiny.maxRequestSize = 500 * 1024^2)
 
   ui <- miniPage(

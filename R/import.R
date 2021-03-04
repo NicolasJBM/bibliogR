@@ -1,4 +1,4 @@
-#' @name import_references
+#' @name import
 #' @title Import References in bibliogR
 #' @author Nicolas Mangin
 #' @description Gadget to import a list of references from Excel to R
@@ -59,7 +59,7 @@
 #' @export
 
 
-import_references <- function() {
+import <- function() {
   options(shiny.maxRequestSize = 500 * 1024^2)
 
   ui <- miniPage(

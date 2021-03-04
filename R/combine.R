@@ -1,4 +1,4 @@
-#' @name combine_references
+#' @name combine
 #' @title Import References and Combine Them
 #' @author Nicolas Mangin
 #' @description Application gathering references from different sources, identifying potential duplicates, and combining them in a single reference file.
@@ -75,7 +75,7 @@
 #' @importFrom tibble rownames_to_column
 #' @export
 
-combine_references <- function() {
+combine <- function() {
   options(shiny.maxRequestSize = 500 * 1024^2)
 
   ui <- miniUI::miniPage(
@@ -205,7 +205,7 @@ combine_references <- function() {
         tables$references <- import_server("initial")
         shiny::incProgress(0.3)
         tables$additional <- import_server("additional") %>%
-          bibliogR::prepare_new_references() %>%
+          prepare_new_references() %>%
           tibble::rownames_to_column("tmpkey")
       })
     })
@@ -245,11 +245,11 @@ combine_references <- function() {
             dplyr::mutate(
               year = as.numeric(year),
               title = furrr::future_map_chr(
-                title, bibliogR::clean_string,
+                title, clean_string,
                 simplify = TRUE
               ),
               author = furrr::future_map_chr(
-                author, bibliogR::clean_string,
+                author, clean_string,
                 simplify = TRUE
               )
             ) %>%
@@ -264,11 +264,11 @@ combine_references <- function() {
             ) %>%
             dplyr::mutate(
               title = furrr::future_map_chr(
-                title, bibliogR::clean_string,
+                title, clean_string,
                 simplify = TRUE
               ),
               author = furrr::future_map_chr(
-                author, bibliogR::clean_string,
+                author, clean_string,
                 simplify = TRUE
               )
             ) %>%
@@ -286,7 +286,7 @@ combine_references <- function() {
               ";"
             )
             incProgress(amount = (1 / nbrref), message = message)
-            match[[i]] <- bibliogR::match_new_reference(
+            match[[i]] <- match_new_reference(
               tmpkey = new[i, "tmpkey"],
               journal = new[i, "journal"],
               year = new[i, "year"],
@@ -350,7 +350,7 @@ combine_references <- function() {
         complement <- tables$additional %>%
           dplyr::select(-tmpkey)
 
-        references_new <- bibliogR::add_new_references(
+        references_new <- add_new_references(
           complement = complement,
           references = tables$references
         )

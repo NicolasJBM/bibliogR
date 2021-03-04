@@ -18,7 +18,6 @@
 #' @importFrom stringdist stringdist
 #' @importFrom future plan
 #' @importFrom furrr future_map_dbl
-#' @export
 
 
 match_new_reference <- function(tmpkey,

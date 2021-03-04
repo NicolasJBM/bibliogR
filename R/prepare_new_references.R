@@ -18,7 +18,6 @@
 #' @importFrom dplyr all_of
 #' @importFrom utils read.csv
 #' @importFrom RefManageR ReadBib
-#' @export
 
 prepare_new_references <- function(addref) {
 
@@ -51,7 +50,7 @@ prepare_new_references <- function(addref) {
     tidyr::replace_na(list(keywords = "", subjects = "", abstract = "")) %>%
     dplyr::mutate(
       title = furrr::future_map_chr(title, clean_string, simplify = FALSE),
-      author = furrr::future_map_chr(author, bibliogR::format_authors),
+      author = furrr::future_map_chr(author, format_authors),
       year = furrr::future_map_dbl(
         year,
         function(x) {

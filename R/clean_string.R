@@ -12,7 +12,6 @@
 #' @importFrom stringr str_remove_all
 #' @importFrom stringr fixed
 #' @importFrom dplyr %>%
-#' @export
 
 
 clean_string <- function(x, simplify = FALSE) {

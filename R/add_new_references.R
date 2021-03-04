@@ -12,7 +12,6 @@
 #' @importFrom utils combn
 #' @importFrom utils txtProgressBar
 #' @importFrom utils setTxtProgressBar
-#' @export
 
 
 add_new_references <- function(complement, references) {

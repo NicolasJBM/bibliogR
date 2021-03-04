@@ -35,8 +35,8 @@ match_new_reference <- function(tmpkey,
   nchartitle <- NULL
   distauth <- NULL
   ncharauth <- NULL
-  alttitle <- NULL
-  altauthor <- NULL
+  newtitle <- NULL
+  newauthor <- NULL
 
   # Re-assign reference information to avoid conflict in filter
   jrnl <- as.character(journal)
@@ -76,21 +76,21 @@ match_new_reference <- function(tmpkey,
       dplyr::filter(distauth == min(distauth)) %>%
       dplyr::mutate(
         tmpkey = tmpkey,
-        alttitle = ttl,
-        altauthor = auth
+        newtitle = ttl,
+        newauthor = auth
       ) %>%
       dplyr::select(
         disttitle, distauth,
         tmpkey, key,
-        title, alttitle,
-        author, altauthor
+        title, newtitle,
+        author, newauthor
       )
   } else {
     match <- tibble(
       tmpkey = "", key = "",
       disttitle = 1, distauth = 1,
-      title = "", alttitle = "",
-      author = "", altauthor = ""
+      title = "", newtitle = "",
+      author = "", newauthor = ""
     )
   }
 

@@ -76,6 +76,9 @@
 #' @importFrom rhandsontable rhandsontable
 #' @importFrom rhandsontable hot_context_menu
 #' @importFrom tibble rownames_to_column
+#' @importFrom tibble column_to_rownames
+#' @importFrom RefManageR as.BibEntry
+#' @importFrom RefManageR WriteBib
 #' @export
 
 combine <- function() {
@@ -170,14 +173,24 @@ combine <- function() {
         "Export",
         icon = icon("file-download"),
         miniContentPanel(
-          fillRow(
+          fillCol(
+            flex = c(1,1,1,6),
             shiny::actionButton(
-              "combine",
-              "Combine and export",
+              "combinexlsx",
+              "Combine and export as .xlsx",
               icon = icon("download"),
               width = "100%",
               style =
-                "margin-top:30px; background-color: #993300; color: #FFF;"
+                "margin-top:30px; background-color: #009933; color: #FFF;"
+            ),
+            tags$hr(),
+            shiny::actionButton(
+              "combinebib",
+              "Combine and export as .bib",
+              icon = icon("download"),
+              width = "100%",
+              style =
+                "margin-top:30px; background-color: #003399; color: #FFF;"
             )
           )
         )
@@ -348,7 +361,7 @@ combine <- function() {
       tables$additional <- complement
     })
 
-    observeEvent(input$combine, {
+    observeEvent(input$combinexlsx, {
       withProgress(message = "Combine and export...", value = 0.33, {
         complement <- tables$additional %>%
           dplyr::select(-tmpkey)
@@ -373,6 +386,48 @@ combine <- function() {
           easyClose = TRUE,
           footer = NULL
         ))
+      })
+    })
+    
+    observeEvent(input$combinebib, {
+      
+      withProgress(message = "Combine and export...", value = 0.33, {
+        complement <- tables$additional %>%
+          dplyr::select(-tmpkey)
+        
+        references_new <- add_new_references(
+          complement = complement,
+          references = tables$references
+        )
+        
+        incProgress(0.33)
+        
+        if (length(unique(references_new)) == nrow(references_new)){
+          print("Now saving the file...")
+          
+          references_new %>%
+            tibble::column_to_rownames("key") %>%
+            RefManageR::as.BibEntry() %>%
+            RefManageR::WriteBib(
+              file = paste0("references_", Sys.Date(), ".bib")
+            )
+          
+          showModal(modalDialog(
+            title = "Combination and exportation complete",
+            "You can now leave the application.",
+            easyClose = TRUE,
+            footer = NULL
+          ))
+        } else {
+          
+          showModal(modalDialog(
+            title = "Sorry, the file cannot be exported",
+            "Keys are not unique.",
+            easyClose = TRUE,
+            footer = NULL
+          ))
+        }
+        
       })
     })
 

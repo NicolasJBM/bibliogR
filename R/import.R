@@ -133,7 +133,7 @@ import <- function() {
         tools::resaveRdaFiles(paste0(
           find.package("bibliogR"), "/references.RData"
         ))
-        
+
         showModal(modalDialog(
           title = "Importation complete",
           "Your references are integrated and can now leave the application.",

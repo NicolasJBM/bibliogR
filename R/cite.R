@@ -93,7 +93,7 @@
 #' @export
 
 cite <- function() {
-  options(shiny.maxRequestSize = 500 * 1024^2)
+  options(shiny.maxRequestSize = 500 * 1024^2, warn = -1)
 
   ui <- miniPage(
     theme = bslib::bs_theme(
@@ -396,23 +396,21 @@ cite <- function() {
     output$citecount <- renderText({
       paste0("Number of citations selected: ", nrow(filtered()))
     })
-    
+
     output$yearcount <- renderPlot({
-      options(warn=-1)
       filtered() %>%
         dplyr::select(year) %>%
         stats::na.omit() %>%
         ggplot2::ggplot(ggplot2::aes(x = year)) +
         ggplot2::geom_histogram(stat = "count") +
         ggplot2::scale_x_discrete(
-          breaks=seq(min(filtered()$year), max(filtered()$year), 5)
+          breaks = seq(min(filtered()$year), max(filtered()$year), 5)
         ) +
         ggplot2::theme_minimal()
     })
-    
+
 
     output$reflist <- DT::renderDataTable({
-      
       if (nrow(afterfiltkeyword()) <= 250) {
         reflist <- filtered()
       } else {
@@ -422,7 +420,7 @@ cite <- function() {
           volume = NA, number = NA, abstract = NA, keywords = NA
         )
       }
-      
+
       withchildrow(
         x = reflist,
         vars = c(

@@ -174,7 +174,7 @@ combine <- function() {
         icon = icon("file-download"),
         miniContentPanel(
           fillCol(
-            flex = c(1,1,1,6),
+            flex = c(1, 1, 1, 6),
             shiny::actionButton(
               "combinexlsx",
               "Combine and export as .xlsx",
@@ -379,7 +379,7 @@ combine <- function() {
           references_new,
           paste0("references_", Sys.Date(), ".xlsx")
         )
-        
+
         showModal(modalDialog(
           title = "Combination and exportation complete",
           "You can now leave the application.",
@@ -388,30 +388,29 @@ combine <- function() {
         ))
       })
     })
-    
+
     observeEvent(input$combinebib, {
-      
       withProgress(message = "Combine and export...", value = 0.33, {
         complement <- tables$additional %>%
           dplyr::select(-tmpkey)
-        
+
         references_new <- add_new_references(
           complement = complement,
           references = tables$references
         )
-        
+
         incProgress(0.33)
-        
-        if (length(unique(references_new)) == nrow(references_new)){
+
+        if (length(unique(references_new)) == nrow(references_new)) {
           print("Now saving the file...")
-          
+
           references_new %>%
             tibble::column_to_rownames("key") %>%
             RefManageR::as.BibEntry() %>%
             RefManageR::WriteBib(
               file = paste0("references_", Sys.Date(), ".bib")
             )
-          
+
           showModal(modalDialog(
             title = "Combination and exportation complete",
             "You can now leave the application.",
@@ -419,7 +418,6 @@ combine <- function() {
             footer = NULL
           ))
         } else {
-          
           showModal(modalDialog(
             title = "Sorry, the file cannot be exported",
             "Keys are not unique.",
@@ -427,7 +425,6 @@ combine <- function() {
             footer = NULL
           ))
         }
-        
       })
     })
 

@@ -78,16 +78,18 @@
 #' @importFrom stringr str_to_lower
 #' @importFrom furrr future_map_chr
 #' @importFrom stats na.omit
-#' @importFrom utils read.csv
-#' @importFrom RefManageR ReadBib
 #' @importFrom DT dataTableOutput
 #' @importFrom DT renderDataTable
 #' @importFrom DT datatable
 #' @importFrom DT JS
 #' @importFrom glue glue
-#' @importFrom readxl read_excel
 #' @importFrom utils head
 #' @importFrom rstudioapi insertText
+#' @importFrom ggplot2 ggplot
+#' @importFrom ggplot2 geom_histogram
+#' @importFrom ggplot2 scale_x_discrete
+#' @importFrom ggplot2 theme_minimal
+#' @importFrom ggplot2 aes
 #' @export
 
 cite <- function() {
@@ -138,15 +140,16 @@ cite <- function() {
           ),
           uiOutput("filtperiod"),
           fluidRow(
-            column(3, uiOutput("filtfield")),
-            column(9, uiOutput("filtjournal"))
+            column(4, uiOutput("filtfield")),
+            column(8, uiOutput("filtjournal"))
           ),
           uiOutput("filttitle"),
           uiOutput("filtabstract"),
           uiOutput("filtkeyword"),
           tags$hr(),
           column(6, textOutput("citecount"))
-        )
+        ),
+        plotOutput("yearcount", height = "100px"),
       ),
 
       # Panel where the author checks references in the filtered list
@@ -380,21 +383,12 @@ cite <- function() {
     ############################################################################
     # Apply filters
     filtered <- reactive({
-      if (nrow(afterfiltkeyword()) <= 250) {
-        filtered <- afterfiltkeyword() %>%
-          dplyr::select(
-            key, title, author, year, journal, issn,
-            volume, number, abstract, keywords
-          ) %>%
-          dplyr::arrange(desc(year), author)
-      } else {
-        filtered <- data.frame(
-          key = "Please", title = "refine your search",
-          author = NA, year = NA, journal = NA, issn = NA,
-          volume = NA, number = NA, abstract = NA, keywords = NA
-        )
-      }
-      filtered
+      afterfiltkeyword() %>%
+        dplyr::select(
+          key, title, author, year, journal, issn,
+          volume, number, abstract, keywords
+        ) %>%
+        dplyr::arrange(desc(year), author)
     })
 
 
@@ -402,9 +396,33 @@ cite <- function() {
     output$citecount <- renderText({
       paste0("Number of citations selected: ", nrow(filtered()))
     })
+    
+    output$yearcount <- renderPlot({
+      options(warn=-1)
+      filtered() %>%
+        dplyr::select(year) %>%
+        stats::na.omit() %>%
+        ggplot2::ggplot(ggplot2::aes(x = year)) +
+        ggplot2::geom_histogram(stat = "count") +
+        ggplot2::scale_x_discrete(
+          breaks=seq(min(filtered()$year), max(filtered()$year), 5)
+        ) +
+        ggplot2::theme_minimal()
+    })
+    
 
     output$reflist <- DT::renderDataTable({
-      reflist <- filtered()
+      
+      if (nrow(afterfiltkeyword()) <= 250) {
+        reflist <- filtered()
+      } else {
+        reflist <- data.frame(
+          key = "Please", title = "refine your search",
+          author = NA, year = NA, journal = NA, issn = NA,
+          volume = NA, number = NA, abstract = NA, keywords = NA
+        )
+      }
+      
       withchildrow(
         x = reflist,
         vars = c(

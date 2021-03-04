@@ -4,7 +4,7 @@
 #' @description Format authors' names so that they fit with bibtex specifications.
 #' @param author  Character. String with names of authors. Authors are separated by " and ".
 #' @return A character string with all the author names properly formated.
-#' @importFrom stringi stri_trans_totitle
+#' @importFrom stringr str_to_title
 #' @importFrom stringr str_replace_all
 #' @importFrom stringr str_split
 #' @importFrom stringr str_detect
@@ -15,7 +15,7 @@
 
 format_authors <- function(author) {
   author <- paste0(" ", lexR::clean_ascii(author))
-  author <- stringi::stri_trans_totitle(author) %>%
+  author <- stringr::str_to_title(author) %>%
     stringr::str_replace_all(" Van Den ", " van_den_") %>%
     stringr::str_replace_all(" Van Der ", " van_der_") %>%
     stringr::str_replace_all(" Van De ", " van_de_") %>%

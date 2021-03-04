@@ -1,4 +1,4 @@
-#' @name cite
+#' @name cite_references
 #' @title Insert Citations in Text
 #' @author Nicolas Mangin
 #' @description Gadget for the selection and insertion of citations in Rmarkdown documents.
@@ -70,6 +70,7 @@
 #' @importFrom dplyr bind_rows
 #' @importFrom dplyr everything
 #' @importFrom dplyr rename
+#' @importFrom dplyr count
 #' @importFrom stringr str_extract
 #' @importFrom stringr str_extract_all
 #' @importFrom stringr str_remove_all
@@ -86,22 +87,20 @@
 #' @importFrom utils head
 #' @importFrom rstudioapi insertText
 #' @importFrom ggplot2 ggplot
-#' @importFrom ggplot2 geom_histogram
+#' @importFrom ggplot2 geom_col
 #' @importFrom ggplot2 scale_x_discrete
 #' @importFrom ggplot2 theme_minimal
 #' @importFrom ggplot2 aes
 #' @export
 
-cite <- function() {
-  options(shiny.maxRequestSize = 500 * 1024^2, warn = -1)
-
+cite_references <- function() {
   ui <- miniPage(
     theme = bslib::bs_theme(
       bootswatch = "flatly",
       base_font = bslib::font_google("Open Sans"),
       "enable-gradients" = FALSE,
       "enable-shadows" = TRUE,
-      spacer = "0.5rem"
+      spacer = "0.25rem"
     ),
 
     tags$head(
@@ -124,32 +123,35 @@ cite <- function() {
         "Search",
         icon = icon("search"),
         miniContentPanel(
-          tags$hr(),
-          fluidRow(
-            column(4, textInput("slctkey", "Key:", value = "")),
-            column(
-              8,
-              selectizeInput(
-                "slctauthor",
-                "Authors:",
-                choices = NULL,
-                multiple = TRUE,
-                width = "100%"
+          fillCol(
+            flex = c(7, 1, 1, 2),
+            fillRow(
+              flex = c(3, 2),
+              fillCol(
+                flex = c(1, 1, 1, 1, 1),
+                uiOutput("filttitle"),
+                uiOutput("filtabstract"),
+                uiOutput("filtfield"),
+                uiOutput("filtjournal"),
+                selectizeInput(
+                  "slctauthor",
+                  "Authors:",
+                  choices = NULL,
+                  multiple = TRUE,
+                  width = "100%"
+                )
+              ),
+              fillCol(
+                flex = c(1, 8),
+                htmlOutput("citecount"),
+                plotOutput("fieldcount", height = "100%", width = "100%")
               )
-            )
-          ),
-          uiOutput("filtperiod"),
-          fluidRow(
-            column(4, uiOutput("filtfield")),
-            column(8, uiOutput("filtjournal"))
-          ),
-          uiOutput("filttitle"),
-          uiOutput("filtabstract"),
-          uiOutput("filtkeyword"),
-          tags$hr(),
-          column(6, textOutput("citecount"))
-        ),
-        plotOutput("yearcount", height = "100px"),
+            ),
+            uiOutput("filtperiod"),
+            tags$br(),
+            plotOutput("yearcount", height = "100px")
+          )
+        )
       ),
 
       # Panel where the author checks references in the filtered list
@@ -204,7 +206,8 @@ cite <- function() {
     number <- NULL
     desc <- NULL
     references <- NULL
-
+    n <- NULL
+    field <- NULL
 
     # Load the local database of references
     # (imported with function import_references)
@@ -385,7 +388,7 @@ cite <- function() {
     filtered <- reactive({
       afterfiltkeyword() %>%
         dplyr::select(
-          key, title, author, year, journal, issn,
+          key, title, author, year, field, journal, issn,
           volume, number, abstract, keywords
         ) %>%
         dplyr::arrange(desc(year), author)
@@ -393,26 +396,68 @@ cite <- function() {
 
 
     # Count the number of references filtered
-    output$citecount <- renderText({
-      paste0("Number of citations selected: ", nrow(filtered()))
+    output$citecount <- renderUI({
+      HTML(paste0(
+        "<center>Number of references: ",
+        nrow(filtered()),
+        "</center>"
+      ))
+    })
+
+    output$fieldcount <- renderPlot({
+      if (is.null(input$slctfield)) {
+        fccond <- TRUE
+      } else {
+        fccond <- (is.na(input$slctfield) | input$slctfield == "")
+      }
+      if (fccond) {
+        baseplot <- filtered() %>%
+          dplyr::filter(!(field %in% c("Field", "Other"))) %>%
+          dplyr::count(field) %>%
+          stats::na.omit()
+        if (nrow(baseplot) > 0) {
+          set_levels <- baseplot$field[order(baseplot$n, decreasing = FALSE)]
+          baseplot %>%
+            dplyr::mutate(field = factor(field, levels = set_levels)) %>%
+            ggplot2::ggplot(ggplot2::aes(x = field, y = n)) +
+            ggplot2::geom_col() +
+            ggplot2::coord_flip() +
+            ggplot2::theme_minimal()
+        }
+      } else {
+        baseplot <- filtered() %>%
+          dplyr::filter(!(journal %in% c("Other"))) %>%
+          dplyr::count(journal) %>%
+          stats::na.omit()
+        if (nrow(baseplot) > 0) {
+          set_levels <- baseplot$journal[order(baseplot$n, decreasing = FALSE)]
+          baseplot %>%
+            dplyr::mutate(journal = factor(journal, levels = set_levels)) %>%
+            ggplot2::ggplot(ggplot2::aes(x = journal, y = n)) +
+            ggplot2::geom_col() +
+            ggplot2::coord_flip() +
+            ggplot2::theme_minimal()
+        }
+      }
     })
 
     output$yearcount <- renderPlot({
-      filtered() %>%
-        dplyr::select(year) %>%
+      baseplot <- filtered() %>%
+        dplyr::count(year) %>%
         stats::na.omit() %>%
-        ggplot2::ggplot(ggplot2::aes(x = year)) +
-        ggplot2::geom_histogram(stat = "count") +
-        ggplot2::scale_x_discrete(
-          breaks = seq(min(filtered()$year), max(filtered()$year), 5)
-        ) +
-        ggplot2::theme_minimal()
+        dplyr::mutate(year = as.numeric(year))
+      if (nrow(baseplot) > 0) {
+        baseplot %>%
+          ggplot2::ggplot(ggplot2::aes(x = year, y = n)) +
+          ggplot2::geom_col() +
+          ggplot2::theme_minimal()
+      }
     })
 
-
     output$reflist <- DT::renderDataTable({
-      if (nrow(afterfiltkeyword()) <= 250) {
-        reflist <- filtered()
+      if (nrow(filtered()) <= 250) {
+        reflist <- filtered() %>%
+          dplyr::select(-field)
       } else {
         reflist <- data.frame(
           key = "Please", title = "refine your search",
@@ -433,10 +478,21 @@ cite <- function() {
 
     # Selection of references
     output$selection <- renderUI({
+      if (nrow(filtered()) <= 250) {
+        reflist <- filtered() %>%
+          dplyr::select(-field)
+      } else {
+        reflist <- data.frame(
+          key = "Please", title = "refine your search",
+          author = NA, year = NA, journal = NA, issn = NA,
+          volume = NA, number = NA, abstract = NA, keywords = NA
+        )
+      }
+
       selectInput(
         "selection",
         "Selection",
-        choices = filtered()$key,
+        choices = reflist$key,
         multiple = T,
         width = "100%"
       )
@@ -498,7 +554,7 @@ make_filter <- function(dataset, variable, id, label) {
     id,
     label,
     choices = choices,
-    selected = "",
+    selected = NULL,
     multiple = FALSE,
     width = "100%"
   )

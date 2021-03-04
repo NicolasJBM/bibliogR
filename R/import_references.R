@@ -1,4 +1,4 @@
-#' @name import
+#' @name import_references
 #' @title Import References in bibliogR
 #' @author Nicolas Mangin
 #' @description Gadget to import a list of references from Excel to R
@@ -61,7 +61,7 @@
 #' @export
 
 
-import <- function() {
+import_references <- function() {
   options(shiny.maxRequestSize = 500 * 1024^2)
 
   ui <- miniPage(
@@ -113,30 +113,29 @@ import <- function() {
 
   server <- function(input, output, session) {
     observeEvent(input$import, {
-      withProgress(message = "References", value = 0, {
-        incProgress(0 / 3, detail = "Import database...")
-        if (!is.null(input$references)) {
-          references <- readxl::read_excel(
-            input$references$datapath[[1]],
-            col_types = "text"
-          )
-        } else {
-          load(paste0(find.package("bibliogR"), "/references.RData"))
-        }
+      shiny::req(input$references)
 
-        incProgress(1 / 3, detail = "Write database...")
+      withProgress(message = "References", value = 0, {
+        incProgress(1 / 4, detail = "Import database...")
+        references <- readxl::read_excel(
+          input$references$datapath[[1]],
+          col_types = "text"
+        )
+
+        incProgress(1 / 4, detail = "Write database...")
         save(references, file = paste0(
           find.package("bibliogR"), "/references.RData"
         ))
 
-        incProgress(1 / 3, detail = "Compress database...")
+        incProgress(1 / 4, detail = "Compress database...")
         tools::resaveRdaFiles(paste0(
           find.package("bibliogR"), "/references.RData"
         ))
 
+        incProgress(1 / 4, detail = "Done!")
         showModal(modalDialog(
-          title = "Importation complete",
-          "Your references are integrated and can now leave the application.",
+          title = "All your references are now imported!",
+          "You can leave the application and start citing.",
           easyClose = TRUE,
           footer = NULL
         ))

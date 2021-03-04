@@ -1,4 +1,4 @@
-#' @name combine
+#' @name combine_references
 #' @title Import References and Combine Them
 #' @author Nicolas Mangin
 #' @description Application gathering references from different sources, identifying potential duplicates, and combining them in a single reference file.
@@ -81,7 +81,7 @@
 #' @importFrom RefManageR WriteBib
 #' @export
 
-combine <- function() {
+combine_references <- function() {
   options(shiny.maxRequestSize = 500 * 1024^2)
 
   ui <- miniUI::miniPage(
@@ -412,8 +412,8 @@ combine <- function() {
             )
 
           showModal(modalDialog(
-            title = "Combination and exportation complete",
-            "You can now leave the application.",
+            title = "Your references have been combined and exported!",
+            "You can now leave the application and import them.",
             easyClose = TRUE,
             footer = NULL
           ))

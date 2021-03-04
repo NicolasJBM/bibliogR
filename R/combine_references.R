@@ -82,7 +82,6 @@
 #' @export
 
 combine_references <- function() {
-  options(shiny.maxRequestSize = 500 * 1024^2)
 
   ui <- miniUI::miniPage(
     theme = bslib::bs_theme(

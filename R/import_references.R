@@ -62,7 +62,6 @@
 
 
 import_references <- function() {
-  options(shiny.maxRequestSize = 500 * 1024^2)
 
   ui <- miniPage(
     theme = bslib::bs_theme(
@@ -91,7 +90,7 @@ import_references <- function() {
             flex = c(4, 2),
             shiny::fileInput(
               "references", "Select on your drive the file references.xlsx:",
-              accept = c(".xlsx"),
+              accept = ".xlsx",
               multiple = FALSE,
               width = "100%"
             ),

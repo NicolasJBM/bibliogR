@@ -426,7 +426,7 @@ cite_references <- function() {
         }
       } else {
         baseplot <- filtered() %>%
-          dplyr::filter(!(journal %in% c("Other"))) %>%
+          dplyr::filter(nchar(journal) > 3) %>%
           dplyr::count(journal) %>%
           stats::na.omit()
         if (nrow(baseplot) > 0) {

@@ -4,6 +4,7 @@
 #' @description
 #' Bring all citations together in a properly formatted string to be inserted.
 #' @param citations Character vector. Keys of the references to be inserted.
+#' @param format    Character string. Decide the formatting
 #' @param pages     Character string. Pages if specified.
 #' @return A properly formatted string og references
 #' @importFrom dplyr case_when

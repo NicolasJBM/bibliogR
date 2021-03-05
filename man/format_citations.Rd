@@ -4,10 +4,12 @@
 \alias{format_citations}
 \title{Format citations for insertion}
 \usage{
-format_citations(citations, pages)
+format_citations(citations, format, pages)
 }
 \arguments{
 \item{citations}{Character vector. Keys of the references to be inserted.}
+
+\item{format}{Character string. Decide the formatting}
 
 \item{pages}{Character string. Pages if specified.}
 }

@@ -66,7 +66,7 @@ combine_references <- function() {
            }")
     )),
 
-    miniUI::gadgetTitleBar("Combine Reference Files"),
+    miniUI::gadgetTitleBar("Combine References"),
     miniUI::miniTabstripPanel(
 
       # Panel where the author selects references in the filtered list

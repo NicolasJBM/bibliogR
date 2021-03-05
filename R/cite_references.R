@@ -83,7 +83,7 @@ cite_references <- function() {
     ),
 
 
-    miniUI::gadgetTitleBar("Insert citations"),
+    miniUI::gadgetTitleBar("Cite References"),
     miniUI::miniTabstripPanel(
 
       # Search tab

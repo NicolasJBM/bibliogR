@@ -7,81 +7,45 @@
 #' a single reference file.
 #' @return An Excel file with the new complete reference list.
 #' @importFrom miniUI miniPage
+#' @importFrom bslib bs_theme
+#' @importFrom bslib font_google
+#' @importFrom shiny tags
+#' @importFrom shiny HTML
 #' @importFrom miniUI gadgetTitleBar
 #' @importFrom miniUI miniTabstripPanel
 #' @importFrom miniUI miniTabPanel
-#' @importFrom miniUI miniContentPanel
-#' @importFrom bslib bs_theme
-#' @importFrom bslib font_google
-#' @importFrom shiny fillCol
-#' @importFrom shiny fillRow
 #' @importFrom shiny icon
-#' @importFrom shiny fileInput
-#' @importFrom shiny textInput
-#' @importFrom shiny dateInput
-#' @importFrom shiny numericInput
-#' @importFrom shiny textAreaInput
-#' @importFrom shiny selectInput
-#' @importFrom shiny checkboxInput
-#' @importFrom shiny downloadButton
-#' @importFrom shiny downloadHandler
-#' @importFrom shiny stopApp
-#' @importFrom shiny runGadget
-#' @importFrom shiny conditionalPanel
-#' @importFrom shiny tags
-#' @importFrom shiny htmlOutput
-#' @importFrom shiny uiOutput
-#' @importFrom shiny plotOutput
-#' @importFrom shiny textOutput
+#' @importFrom miniUI miniContentPanel
+#' @importFrom shiny fillCol
 #' @importFrom shiny actionButton
-#' @importFrom shiny renderUI
-#' @importFrom shiny renderPlot
-#' @importFrom shiny renderText
-#' @importFrom shiny reactive
+#' @importFrom rhandsontable rHandsontableOutput
 #' @importFrom shiny reactiveValues
-#' @importFrom shiny observe
 #' @importFrom shiny observeEvent
 #' @importFrom shiny withProgress
 #' @importFrom shiny incProgress
-#' @importFrom shiny h3
-#' @importFrom shiny isolate
-#' @importFrom shiny reactiveValuesToList
-#' @importFrom shiny tableOutput
-#' @importFrom shiny renderTable
-#' @importFrom shiny HTML
-#' @importFrom shiny validate
-#' @importFrom shiny need
-#' @importFrom shiny fluidRow
-#' @importFrom shiny column
-#' @importFrom shiny showModal
-#' @importFrom shiny modalDialog
-#' @importFrom shiny eventReactive
-#' @importFrom shiny dialogViewer
-#' @importFrom shiny paneViewer
-#' @importFrom shiny req
-#' @importFrom shiny paneViewer
-#' @importFrom shiny showModal
-#' @importFrom shiny modalDialog
-#' @importFrom dplyr mutate
-#' @importFrom dplyr select
-#' @importFrom dplyr left_join
-#' @importFrom dplyr bind_rows
-#' @importFrom dplyr arrange
-#' @importFrom dplyr everything
-#' @importFrom furrr future_map
-#' @importFrom furrr future_map_chr
-#' @importFrom furrr future_pmap
-#' @importFrom stringr str_extract
-#' @importFrom readxl read_excel
-#' @importFrom WriteXLS WriteXLS
-#' @importFrom rhandsontable rHandsontableOutput
+#' @importFrom tibble rownames_to_column
 #' @importFrom rhandsontable renderRHandsontable
 #' @importFrom rhandsontable rhandsontable
 #' @importFrom rhandsontable hot_context_menu
-#' @importFrom tibble rownames_to_column
+#' @importFrom rhandsontable hot_to_r
+#' @importFrom future plan
+#' @importFrom dplyr select
+#' @importFrom dplyr mutate
+#' @importFrom dplyr %>%
+#' @importFrom furrr future_map_chr
+#' @importFrom dplyr filter
+#' @importFrom dplyr bind_rows
+#' @importFrom dplyr everything
+#' @importFrom dplyr arrange
+#' @importFrom WriteXLS WriteXLS
+#' @importFrom shiny showModal
+#' @importFrom shiny modalDialog
 #' @importFrom tibble column_to_rownames
 #' @importFrom RefManageR as.BibEntry
 #' @importFrom RefManageR WriteBib
+#' @importFrom shiny stopApp
+#' @importFrom shiny runGadget
+#' @importFrom shiny paneViewer
 #' @export
 
 combine_references <- function() {
@@ -96,29 +60,29 @@ combine_references <- function() {
       spacer = "0.5rem"
     ),
 
-    tags$head(tags$style(
-      HTML(".shiny-notification {
+    shiny::tags$head(shiny::tags$style(
+      shiny::HTML(".shiny-notification {
               position:fixed;top: 30%;left: 0%;right: 0%;
            }")
     )),
 
-    gadgetTitleBar("Combine Reference Files"),
-    miniTabstripPanel(
+    miniUI::gadgetTitleBar("Combine Reference Files"),
+    miniUI::miniTabstripPanel(
 
       # Panel where the author selects references in the filtered list
-      miniTabPanel(
+      miniUI::miniTabPanel(
         "Import",
-        icon = icon("file-upload"),
-        miniContentPanel(
-          fillCol(
+        icon = shiny::icon("file-upload"),
+        miniUI::miniContentPanel(
+          shiny::fillCol(
             flex = c(1, 1, 1),
             import_ui("initial", "Select the initial set of references"),
             import_ui("additional", "Select the additional set of references"),
-            actionButton(
+            shiny::actionButton(
               "import",
               "Import",
               width = "100%",
-              icon("upload"),
+              shiny::icon("upload"),
               style =
                 "background-color: #009933; color: #FFF;"
             )
@@ -126,17 +90,17 @@ combine_references <- function() {
         )
       ),
 
-      miniTabPanel(
+      miniUI::miniTabPanel(
         "Edit",
-        icon = icon("edit"),
-        miniContentPanel(
-          fillCol(
+        icon = shiny::icon("edit"),
+        miniUI::miniContentPanel(
+          shiny::fillCol(
             flex = c(10, 2),
             rhandsontable::rHandsontableOutput("display_additional"),
             shiny::actionButton(
               "update",
               "Update",
-              icon = icon("pencil-alt"),
+              icon = shiny::icon("pencil-alt"),
               width = "100%",
               style =
                 "margin-top:30px; background-color: #009933; color: #FFF;"
@@ -145,16 +109,16 @@ combine_references <- function() {
         )
       ),
 
-      miniTabPanel(
+      miniUI::miniTabPanel(
         "Duplicates",
-        icon = icon("clone"),
-        miniContentPanel(
-          fillCol(
+        icon = shiny::icon("clone"),
+        miniUI::miniContentPanel(
+          shiny::fillCol(
             flex = c(1, 9, 2),
             shiny::actionButton(
               "searchdupl",
               "Scan",
-              icon = icon("search"),
+              icon = shiny::icon("search"),
               width = "100%",
               style =
                 "margin-top:30px; background-color: #330099; color: #FFF;"
@@ -163,7 +127,7 @@ combine_references <- function() {
             shiny::actionButton(
               "filterselection",
               "Filter",
-              icon = icon("filter"),
+              icon = shiny::icon("filter"),
               width = "100%",
               style =
                 "margin-top:30px; background-color: #990033; color: #FFF;"
@@ -172,25 +136,25 @@ combine_references <- function() {
         )
       ),
 
-      miniTabPanel(
+      miniUI::miniTabPanel(
         "Export",
-        icon = icon("file-download"),
-        miniContentPanel(
-          fillCol(
+        icon = shiny::icon("file-download"),
+        miniUI::miniContentPanel(
+          shiny::fillCol(
             flex = c(1, 1, 1, 6),
             shiny::actionButton(
               "combinexlsx",
               "Combine and export as .xlsx",
-              icon = icon("download"),
+              icon = shiny::icon("download"),
               width = "100%",
               style =
                 "margin-top:30px; background-color: #009933; color: #FFF;"
             ),
-            tags$hr(),
+            shiny::tags$hr(),
             shiny::actionButton(
               "combinebib",
               "Combine and export as .bib",
-              icon = icon("download"),
+              icon = shiny::icon("download"),
               width = "100%",
               style =
                 "margin-top:30px; background-color: #003399; color: #FFF;"
@@ -214,7 +178,7 @@ combine_references <- function() {
     year <- NULL
 
     # Create reactive values
-    tables <- reactiveValues()
+    tables <- shiny::reactiveValues()
     tables$references <- NA
     tables$additional <- NA
 
@@ -244,18 +208,21 @@ combine_references <- function() {
       }
     })
 
-    observeEvent(input$update, {
+    shiny::observeEvent(input$update, {
       tables$additional <- suppressWarnings(
         rhandsontable::hot_to_r(input$display_additional)
       )
     })
 
     # Flag potential duplicates
-    observeEvent(input$searchdupl, {
-      withProgress(
+    shiny::observeEvent(input$searchdupl, {
+      shiny::withProgress(
         message = "Find potential matches",
         detail = "This may take a while...", {
-          incProgress(amount = 0, message = "Search for potential duplicates;")
+          shiny::incProgress(
+            amount = 0,
+            message = "Search for potential duplicates;"
+          )
 
           future::plan("multisession")
 
@@ -304,7 +271,8 @@ combine_references <- function() {
               nbrref,
               ";"
             )
-            incProgress(amount = (1 / nbrref), message = message)
+            shiny::incProgress(amount = (1 / nbrref), message = message)
+
             match[[i]] <- match_new_reference(
               tmpkey = new[i, "tmpkey"],
               journal = new[i, "journal"],
@@ -352,7 +320,7 @@ combine_references <- function() {
       }
     })
 
-    observeEvent(input$filterselection, {
+    shiny::observeEvent(input$filterselection, {
       keep <- rhandsontable::hot_to_r(input$display_matches) %>%
         dplyr::filter(keep == TRUE)
 
@@ -364,8 +332,8 @@ combine_references <- function() {
       tables$additional <- complement
     })
 
-    observeEvent(input$combinexlsx, {
-      withProgress(message = "Combine and export...", value = 0.33, {
+    shiny::observeEvent(input$combinexlsx, {
+      shiny::withProgress(message = "Combine and export...", value = 0.33, {
         complement <- tables$additional %>%
           dplyr::select(-tmpkey)
 
@@ -374,7 +342,7 @@ combine_references <- function() {
           references = tables$references
         )
 
-        incProgress(0.33)
+        shiny::incProgress(0.33)
 
         print("Now saving the file...")
 
@@ -383,7 +351,7 @@ combine_references <- function() {
           paste0("references_", Sys.Date(), ".xlsx")
         )
 
-        showModal(modalDialog(
+        shiny::showModal(shiny::modalDialog(
           title = "Combination and exportation complete",
           "You can now leave the application.",
           easyClose = TRUE,
@@ -392,8 +360,8 @@ combine_references <- function() {
       })
     })
 
-    observeEvent(input$combinebib, {
-      withProgress(message = "Combine and export...", value = 0.33, {
+    shiny::observeEvent(input$combinebib, {
+      shiny::withProgress(message = "Combine and export...", value = 1 / 3, {
         complement <- tables$additional %>%
           dplyr::select(-tmpkey)
 
@@ -402,7 +370,7 @@ combine_references <- function() {
           references = tables$references
         )
 
-        incProgress(0.33)
+        shiny::incProgress(1 / 3)
 
         if (length(unique(references_new)) == nrow(references_new)) {
           print("Now saving the file...")
@@ -414,14 +382,14 @@ combine_references <- function() {
               file = paste0("references_", Sys.Date(), ".bib")
             )
 
-          showModal(modalDialog(
+          shiny::showModal(shiny::modalDialog(
             title = "Your references have been combined and exported!",
             "You can now leave the application and import the file.",
             easyClose = TRUE,
             footer = NULL
           ))
         } else {
-          showModal(modalDialog(
+          shiny::showModal(shiny::modalDialog(
             title = "Sorry, the file cannot be exported",
             "Keys are not unique.",
             easyClose = TRUE,
@@ -431,10 +399,13 @@ combine_references <- function() {
       })
     })
 
-    observeEvent(input$done, {
-      stopApp()
+    shiny::observeEvent(input$done, {
+      shiny::stopApp()
     })
   }
 
-  runGadget(ui, server, viewer = paneViewer(minHeight = "maximize"))
+  shiny::runGadget(
+    ui,
+    server,
+    viewer = shiny::paneViewer(minHeight = "maximize"))
 }

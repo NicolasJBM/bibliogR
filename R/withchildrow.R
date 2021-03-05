@@ -1,5 +1,17 @@
-# Collapsible entries in reference list
-# source: http://www.reigo.eu/2018/04/extending-dt-child-row-example/
+#' @name withchildrow
+#' @title Create collapsible variables
+#' @description Function to collapse variables in a table
+#' @param x    Tables to reformat.
+#' @param vars Variables which should be collapsed.
+#' @param opts Options.
+#' @param ...  Other parameters
+#' @source http://www.reigo.eu/2018/04/extending-dt-child-row-example/
+#' @importFrom furrr future_map_chr
+#' @importFrom DT datatable
+#' @importFrom DT JS
+#' @importFrom glue glue
+
+
 withchildrow <- function(x, vars = NULL, opts = NULL, ...) {
   names_x <- names(x)
   if (is.null(vars)) stop("'vars' must be specified!")
@@ -30,7 +42,7 @@ withchildrow <- function(x, vars = NULL, opts = NULL, ...) {
     ...,
     escape = -2,
     options = opts,
-    callback = JS(.callback2(x = x, pos = c(0, pos)))
+    callback = DT::JS(.callback2(x = x, pos = c(0, pos)))
   )
 }
 

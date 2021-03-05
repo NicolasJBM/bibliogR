@@ -18,28 +18,29 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
 VignetteBuilder: knitr
 Imports:
-  miniUI,
-  shiny,
-  bslib,
   dplyr,
-  stringr,
-  stringdist,
-  readxl,
-  WriteXLS,
-  tibble,
   utils,
-  RefManageR,
-  ggplot2,
-  readr,
-  tidyr,
-  stats,
+  stringr,
+  miniUI,
+  bslib,
+  shiny,
   DT,
-  rhandsontable,
-  glue,
+  stats,
+  ggplot2,
   rstudioapi,
+  lexR,
+  rhandsontable,
+  tibble,
   future,
   furrr,
-  lexR
+  WriteXLS,
+  RefManageR,
+  tidyr,
+  readxl,
+  tools,
+  stringdist,
+  glue,
+  readr
 Suggests:
   knitr
 

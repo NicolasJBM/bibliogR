@@ -16,9 +16,11 @@ filter_references(
 
 \item{variable}{Character string. Variable used for filtering.}
 
-\item{filter_value}{Regex pattern, character string, numeric vector, or numeric value. Dependent on the the filter type}
+\item{filter_value}{Regex pattern, character string, numeric vector,
+or numeric value. Dependent on the the filter type}
 
-\item{filter_type}{Character string. Specify whether the filter is a regex "pattern", a "selection" string, a numeric "range" or a numeric "value".}
+\item{filter_type}{Character string. Specify whether the filter is a regex "pattern",
+a "selection" string, a numeric "range" or a numeric "value".}
 }
 \value{
 A properly formatted string og references

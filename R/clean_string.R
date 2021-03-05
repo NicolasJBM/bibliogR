@@ -9,9 +9,9 @@
 #' @importFrom lexR clean_tags
 #' @importFrom lexR clean_spaces
 #' @importFrom lexR clean_ascii
-#' @importFrom lexR clean_letters
 #' @importFrom stringr str_remove_all
 #' @importFrom stringr fixed
+#' @importFrom lexR clean_letters
 #' @importFrom dplyr %>%
 
 

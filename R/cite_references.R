@@ -4,94 +4,53 @@
 #' @description
 #' Gadget for the selection and insertion of citations in Rmarkdown documents.
 #' @importFrom miniUI miniPage
+#' @importFrom bslib bs_theme
+#' @importFrom bslib font_google
+#' @importFrom shiny tags
+#' @importFrom shiny HTML
 #' @importFrom miniUI gadgetTitleBar
 #' @importFrom miniUI miniTabstripPanel
 #' @importFrom miniUI miniTabPanel
+#' @importFrom shiny icon
 #' @importFrom miniUI miniContentPanel
-#' @importFrom bslib bs_theme
-#' @importFrom bslib font_google
 #' @importFrom shiny fillCol
 #' @importFrom shiny fillRow
-#' @importFrom shiny icon
-#' @importFrom shiny fileInput
 #' @importFrom shiny textInput
-#' @importFrom shiny dateInput
-#' @importFrom shiny numericInput
-#' @importFrom shiny textAreaInput
 #' @importFrom shiny selectInput
-#' @importFrom shiny selectizeInput
-#' @importFrom shiny updateSelectizeInput
-#' @importFrom shiny sliderInput
-#' @importFrom shiny checkboxInput
-#' @importFrom shiny downloadButton
-#' @importFrom shiny downloadHandler
-#' @importFrom shiny stopApp
-#' @importFrom shiny runGadget
-#' @importFrom shiny conditionalPanel
-#' @importFrom shiny tags
 #' @importFrom shiny htmlOutput
-#' @importFrom shiny uiOutput
 #' @importFrom shiny plotOutput
-#' @importFrom shiny textOutput
-#' @importFrom shiny actionButton
-#' @importFrom shiny renderUI
-#' @importFrom shiny renderPlot
-#' @importFrom shiny renderText
-#' @importFrom shiny reactive
-#' @importFrom shiny reactiveValues
-#' @importFrom shiny observe
-#' @importFrom shiny observeEvent
-#' @importFrom shiny h3
-#' @importFrom shiny isolate
-#' @importFrom shiny reactiveValuesToList
-#' @importFrom shiny tableOutput
-#' @importFrom shiny renderTable
-#' @importFrom shiny HTML
-#' @importFrom shiny validate
-#' @importFrom shiny need
+#' @importFrom shiny sliderInput
 #' @importFrom shiny fluidRow
 #' @importFrom shiny column
-#' @importFrom shiny showModal
-#' @importFrom shiny modalDialog
-#' @importFrom shiny eventReactive
-#' @importFrom shiny dialogViewer
-#' @importFrom shiny paneViewer
-#' @importFrom tibble column_to_rownames
-#' @importFrom tibble rownames_to_column
-#' @importFrom tibble tibble
-#' @importFrom tibble as_tibble
-#' @importFrom dplyr select
-#' @importFrom dplyr filter
-#' @importFrom dplyr group_by
-#' @importFrom dplyr summarize_all
-#' @importFrom dplyr mutate
-#' @importFrom dplyr %>%
-#' @importFrom dplyr case_when
-#' @importFrom dplyr arrange
-#' @importFrom dplyr bind_rows
-#' @importFrom dplyr everything
-#' @importFrom dplyr rename
-#' @importFrom dplyr count
-#' @importFrom stringr str_extract
-#' @importFrom stringr str_extract_all
-#' @importFrom stringr str_remove_all
-#' @importFrom stringr str_split
-#' @importFrom stringr str_detect
-#' @importFrom stringr str_to_lower
-#' @importFrom furrr future_map_chr
-#' @importFrom stats na.omit
+#' @importFrom shiny uiOutput
+#' @importFrom shiny actionButton
 #' @importFrom DT dataTableOutput
-#' @importFrom DT renderDataTable
-#' @importFrom DT datatable
-#' @importFrom DT JS
-#' @importFrom glue glue
-#' @importFrom utils head
-#' @importFrom rstudioapi insertText
+#' @importFrom shiny withProgress
+#' @importFrom shiny incProgress
+#' @importFrom dplyr select
+#' @importFrom stats na.omit
+#' @importFrom shiny updateSelectInput
+#' @importFrom shiny updateSliderInput
+#' @importFrom shiny observe
+#' @importFrom shiny renderUI
+#' @importFrom shiny renderPlot
+#' @importFrom dplyr %>%
+#' @importFrom dplyr all_of
+#' @importFrom dplyr count
+#' @importFrom dplyr mutate
 #' @importFrom ggplot2 ggplot
-#' @importFrom ggplot2 geom_col
-#' @importFrom ggplot2 scale_x_discrete
-#' @importFrom ggplot2 theme_minimal
 #' @importFrom ggplot2 aes
+#' @importFrom ggplot2 geom_col
+#' @importFrom ggplot2 xlab
+#' @importFrom ggplot2 coord_flip
+#' @importFrom ggplot2 theme_minimal
+#' @importFrom DT renderDataTable
+#' @importFrom shiny observeEvent
+#' @importFrom rstudioapi insertText
+#' @importFrom shiny stopApp
+#' @importFrom shiny runGadget
+#' @importFrom shiny paneViewer
+#' @importFrom shiny reactive
 #' @export
 
 
@@ -317,7 +276,7 @@ cite_references <- function() {
     )
 
     # Apply filters
-    after_title_selection <- reactive({
+    after_title_selection <- shiny::reactive({
       references %>%
         filter_references(
           variable = "title",
@@ -326,7 +285,7 @@ cite_references <- function() {
         )
     })
 
-    after_abstract_selection <- reactive({
+    after_abstract_selection <- shiny::reactive({
       after_title_selection() %>%
         filter_references(
           variable = "abstract",
@@ -335,7 +294,7 @@ cite_references <- function() {
         )
     })
 
-    after_field_selection <- reactive({
+    after_field_selection <- shiny::reactive({
       after_abstract_selection() %>%
         filter_references(
           variable = "field",
@@ -344,7 +303,7 @@ cite_references <- function() {
         )
     })
 
-    after_journal_selection <- reactive({
+    after_journal_selection <- shiny::reactive({
       after_field_selection() %>%
         filter_references(
           variable = "journal",
@@ -353,7 +312,7 @@ cite_references <- function() {
         )
     })
 
-    after_author_selection <- reactive({
+    after_author_selection <- shiny::reactive({
       after_journal_selection() %>%
         filter_references(
           variable = "author",
@@ -362,7 +321,7 @@ cite_references <- function() {
         )
     })
 
-    after_period_selection <- reactive({
+    after_period_selection <- shiny::reactive({
       after_author_selection() %>%
         filter_references(
           variable = "year",
@@ -373,7 +332,6 @@ cite_references <- function() {
 
     # Update filters
     shiny::observe({
-
       fields <- unique(c("", stats::na.omit(after_author_selection()$field)))
       if (input$slctfield %in% fields) {
         tmpfield <- input$slctfield
@@ -387,7 +345,8 @@ cite_references <- function() {
       )
 
       journals <- unique(c("", stats::na.omit(
-        after_author_selection()$journal)))
+        after_author_selection()$journal
+      )))
       if (input$slctjournal %in% journals) {
         tmpjournal <- input$slctjournal
       } else {
@@ -400,24 +359,16 @@ cite_references <- function() {
       )
 
       minyear <- min(stats::na.omit(
-        as.numeric(after_author_selection()$year)))
-      if (input$slctperiod[1] >= minyear) {
-        tmpminyear <- input$slctperiod[1]
-      } else {
-        tmpminyear <- minyear
-      }
+        as.numeric(after_author_selection()$year)
+      ))
       maxyear <- max(stats::na.omit(
-        as.numeric(after_author_selection()$year)))
-      if (input$slctperiod[2] <= maxyear) {
-        tmpmaxyear <- input$slctperiod[2]
-      } else {
-        tmpmaxyear <- maxyear
-      }
+        as.numeric(after_author_selection()$year)
+      ))
       shiny::updateSliderInput(
         session, "slctperiod",
         min = minyear,
         max = maxyear,
-        value = c(tmpminyear, tmpmaxyear)
+        value = c(minyear, maxyear)
       )
     })
 
@@ -432,38 +383,26 @@ cite_references <- function() {
 
     # Display the distribution of papers across fields or journals
     output$fieldcount <- shiny::renderPlot({
-      if (is.null(input$slctfield)) {
-        fccond <- TRUE
+      if (length(unique(after_period_selection())) > 1) {
+        level <- "field"
       } else {
-        fccond <- (is.na(input$slctfield) | input$slctfield == "")
+        level <- "journal"
       }
-      if (fccond) {
-        baseplot <- after_period_selection() %>%
-          dplyr::count(field) %>%
-          stats::na.omit()
-        if (nrow(baseplot) > 0) {
-          set_levels <- baseplot$field[order(baseplot$n, decreasing = FALSE)]
-          baseplot %>%
-            dplyr::mutate(field = factor(field, levels = set_levels)) %>%
-            ggplot2::ggplot(ggplot2::aes(x = field, y = n)) +
-            ggplot2::geom_col() +
-            ggplot2::coord_flip() +
-            ggplot2::theme_minimal()
-        }
-      } else {
-        baseplot <- after_period_selection() %>%
-          dplyr::filter(nchar(journal) > 3) %>%
-          dplyr::count(journal) %>%
-          stats::na.omit()
-        if (nrow(baseplot) > 0) {
-          set_levels <- baseplot$journal[order(baseplot$n, decreasing = FALSE)]
-          baseplot %>%
-            dplyr::mutate(journal = factor(journal, levels = set_levels)) %>%
-            ggplot2::ggplot(ggplot2::aes(x = journal, y = n)) +
-            ggplot2::geom_col() +
-            ggplot2::coord_flip() +
-            ggplot2::theme_minimal()
-        }
+
+      baseplot <- after_period_selection() %>%
+        dplyr::select(level = dplyr::all_of(level)) %>%
+        dplyr::count(level) %>%
+        stats::na.omit()
+
+      if (nrow(baseplot) > 0) {
+        set_levels <- baseplot$level[order(baseplot$n, decreasing = FALSE)]
+        baseplot %>%
+          dplyr::mutate(level = factor(level, levels = set_levels)) %>%
+          ggplot2::ggplot(ggplot2::aes(x = level, y = n)) +
+          ggplot2::geom_col() +
+          ggplot2::xlab(level) +
+          ggplot2::coord_flip() +
+          ggplot2::theme_minimal()
       }
     })
 

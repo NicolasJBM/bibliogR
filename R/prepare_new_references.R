@@ -4,20 +4,17 @@
 #' @description Format references to allow their combination.
 #' @param addref  Tibble. References list to clean.
 #' @return A list of references which can be appended to the main file.
+#' @importFrom tidyr replace_na
+#' @importFrom dplyr mutate
+#' @importFrom furrr future_map_chr
+#' @importFrom furrr future_map_dbl
 #' @importFrom stringr str_extract_all
 #' @importFrom stringr str_replace_all
 #' @importFrom stringr str_to_title
-#' @importFrom furrr future_map_chr
-#' @importFrom furrr future_map_dbl
-#' @importFrom tidyr unite
-#' @importFrom tidyr replace_na
-#' @importFrom dplyr mutate
-#' @importFrom dplyr filter
-#' @importFrom dplyr %>%
 #' @importFrom dplyr select
 #' @importFrom dplyr all_of
-#' @importFrom utils read.csv
-#' @importFrom RefManageR ReadBib
+#' @importFrom dplyr %>%
+
 
 prepare_new_references <- function(addref) {
 

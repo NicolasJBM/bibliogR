@@ -7,13 +7,14 @@
 #' @param complement dataframe. References to be added.
 #' @param references dataframe. References to which the references are added.
 #' @return A dataframe of references
-#' @importFrom stringr str_remove
-#' @importFrom stringr str_remove_all
-#' @importFrom dplyr bind_rows
 #' @importFrom dplyr mutate_all
-#' @importFrom utils combn
 #' @importFrom utils txtProgressBar
 #' @importFrom utils setTxtProgressBar
+#' @importFrom dplyr %>%
+#' @importFrom dplyr bind_rows
+#' @importFrom stringr str_remove
+#' @importFrom stringr str_remove_all
+#' @importFrom utils combn
 
 add_new_references <- function(complement, references) {
   complement <- dplyr::mutate_all(complement, as.character)
@@ -22,7 +23,8 @@ add_new_references <- function(complement, references) {
   complement$order <- ""
   addition <- nrow(complement)
   progress_bar <- utils::txtProgressBar(
-    min = 0, max = addition, style = 3, char = "=")
+    min = 0, max = addition, style = 3, char = "="
+  )
   for (i in 1:addition) {
     utils::setTxtProgressBar(progress_bar, value = i)
     keys <- references$key

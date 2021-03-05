@@ -7,10 +7,11 @@
 format_authors(author)
 }
 \arguments{
-\item{author}{Character. String with names of authors. Authors are separated by " and ".}
+\item{author}{Character. String with names of authors.
+Authors are separated by " and ".}
 }
 \value{
-A character string with all the author names properly formated.
+A character string with all the author names properly formatted.
 }
 \description{
 Format authors' names so that they fit with bibtex specifications.

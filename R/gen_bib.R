@@ -6,33 +6,34 @@
 #' the function is embedded and add it in the working directory.
 #' Place this function in the setup of the markdown document.
 #' @param wdir         Character string. Path to the desired working directory.
-#' @param keys         Character vector. List of bibtex keys to export as a bibtex database.
-#' @param journal_list Logical. Whether a list of journals with the number of citations should be produced.
-#' @param author_list  Logical. Whether a list of authors with the number of citations should be produced.
+#' @param keys
+#' Character vector. List of bibtex keys to export as a bibtex database.
+#' @param journal_list
+#' Logical. Whether a list of journals with the number of citations
+#' should be produced.
+#' @param author_list
+#'  Logical. Whether a list of authors with the number of citations
+#'  should be produced.
 #' @return A bib file in the same folder as the Rmarkdown document.
-#' @importFrom tibble column_to_rownames
-#' @importFrom tibble rownames_to_column
-#' @importFrom tibble remove_rownames
-#' @importFrom dplyr filter
-#' @importFrom dplyr mutate
 #' @importFrom dplyr %>%
-#' @importFrom dplyr bind_rows
-#' @importFrom dplyr group_by
-#' @importFrom dplyr ungroup
-#' @importFrom dplyr sample_n
-#' @importFrom dplyr mutate_all
-#' @importFrom tidyr unnest
-#' @importFrom furrr future_map
+#' @importFrom tibble tibble
 #' @importFrom stringr str_detect
+#' @importFrom dplyr mutate
+#' @importFrom furrr future_map
+#' @importFrom tidyr unnest
 #' @importFrom stringr str_extract_all
+#' @importFrom stringr str_remove_all
+#' @importFrom dplyr filter
+#' @importFrom dplyr mutate_all
 #' @importFrom stringr str_replace_all
-#' @importFrom stats na.omit
-#' @importFrom utils read.csv
+#' @importFrom dplyr group_by
+#' @importFrom dplyr sample_n
+#' @importFrom dplyr ungroup
+#' @importFrom dplyr arrange
 #' @importFrom utils write.csv
-#' @importFrom utils installed.packages
-#' @importFrom RefManageR ReadBib
-#' @importFrom RefManageR WriteBib
+#' @importFrom tibble column_to_rownames
 #' @importFrom RefManageR as.BibEntry
+#' @importFrom RefManageR WriteBib
 #' @importFrom readr read_file
 #' @export
 
@@ -65,15 +66,15 @@ gen_bib <- function(wdir = NULL,
 
     if (nrow(rmdfiles) > 0) {
       content <- rmdfiles %>%
-        dplyr::mutate(text = furrr::future_map(rmdfiles, read_file)) %>%
+        dplyr::mutate(text = furrr::future_map(rmdfiles, readr::read_file)) %>%
         tidyr::unnest(text)
       content <- paste(as.character(unlist(content$text)), collaspe = " ")
     }
 
     selection <- content %>%
-      str_extract_all("@\\w+") %>%
+      stringr::str_extract_all("@\\w+") %>%
       unlist() %>%
-      str_remove_all("@") %>%
+      stringr::str_remove_all("@") %>%
       unique()
   } else {
     selection <- keys
@@ -87,23 +88,27 @@ gen_bib <- function(wdir = NULL,
       as.data.frame()
 
     bib <- basebib %>%
-      mutate_all(str_replace_all, pattern = "&", replacement = "\\\\&") %>%
-      mutate(
+      dplyr::mutate_all(
+        stringr::str_replace_all,
+        pattern = "&",
+        replacement = "\\\\&"
+      ) %>%
+      dplyr::mutate(
         title = paste0("{", title, "}"),
         abstract = paste0("{", abstract, "}")
       ) %>%
       unique() %>%
-      group_by(key) %>%
-      sample_n(1) %>%
-      ungroup() %>%
+      dplyr::group_by(key) %>%
+      dplyr::sample_n(1) %>%
+      dplyr::ungroup() %>%
       as.data.frame()
 
     if (journal_list) {
       journal_rank <- bib$journal %>%
         table() %>%
         as.data.frame() %>%
-        arrange(-Freq)
-      write.csv(journal_rank, "journal_rank.csv", row.names = FALSE)
+        dplyr::arrange(-Freq)
+      utils::write.csv(journal_rank, "journal_rank.csv", row.names = FALSE)
     }
 
     if (author_list) {
@@ -111,17 +116,17 @@ gen_bib <- function(wdir = NULL,
         stringr::str_extract_all("^(.*?), | and(.*?),") %>%
         unlist() %>%
         stringr::str_remove_all(" and ") %>%
-        str_remove_all(",") %>%
+        stringr::str_remove_all(",") %>%
         trimws() %>%
         table() %>%
         as.data.frame() %>%
-        arrange(-Freq)
-      write.csv(author_rank, "author_rank.csv", row.names = FALSE)
+        dplyr::arrange(-Freq)
+      utils::write.csv(author_rank, "author_rank.csv", row.names = FALSE)
     }
 
     bib <- bib %>%
-      split(f = bib$key) %>%
-      as.BibEntry() %>%
-      WriteBib(file = "dat/ref.bib", append = FALSE)
+      tibble::column_to_rownames("key") %>%
+      RefManageR::as.BibEntry() %>%
+      RefManageR::WriteBib(file = "dat/ref.bib", append = FALSE)
   }
 }

@@ -11,5 +11,5 @@
 create_reference_file <- function() {
   references <- NULL
   load(paste0(find.package("bibliogR"), "/references.RData"))
-  WriteXLS::WriteXLS(references, paste0("references_", Sys.Date(),".xlsx"))
+  WriteXLS::WriteXLS(references, paste0("references_", Sys.Date(), ".xlsx"))
 }

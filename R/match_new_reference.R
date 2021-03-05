@@ -12,14 +12,15 @@
 #' @param method     Character string. Method for stringdist.
 #' @param references Tibble. Initial database of references.
 #' @return A match between keys.
-#' @importFrom dplyr filter
+#' @importFrom dplyr %>%
 #' @importFrom dplyr mutate
 #' @importFrom dplyr filter
 #' @importFrom dplyr select
 #' @importFrom dplyr mutate_all
-#' @importFrom stringdist stringdist
 #' @importFrom future plan
 #' @importFrom furrr future_map_dbl
+#' @importFrom stringdist stringdist
+#' @importFrom tibble tibble
 
 
 match_new_reference <- function(tmpkey,
@@ -88,7 +89,7 @@ match_new_reference <- function(tmpkey,
         author, newauthor
       )
   } else {
-    match <- tibble(
+    match <- tibble::tibble(
       tmpkey = "", key = "",
       disttitle = 1, distauth = 1,
       title = "", newtitle = "",

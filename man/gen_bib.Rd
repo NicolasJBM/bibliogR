@@ -11,9 +11,11 @@ gen_bib(wdir = NULL, keys = NULL, journal_list = FALSE, author_list = FALSE)
 
 \item{keys}{Character vector. List of bibtex keys to export as a bibtex database.}
 
-\item{journal_list}{Logical. Whether a list of journals with the number of citations should be produced.}
+\item{journal_list}{Logical. Whether a list of journals with the number of citations
+should be produced.}
 
-\item{author_list}{Logical. Whether a list of authors with the number of citations should be produced.}
+\item{author_list}{Logical. Whether a list of authors with the number of citations
+should be produced.}
 }
 \value{
 A bib file in the same folder as the Rmarkdown document.

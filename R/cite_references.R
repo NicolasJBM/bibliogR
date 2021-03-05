@@ -28,6 +28,8 @@
 #' @importFrom shiny withProgress
 #' @importFrom shiny incProgress
 #' @importFrom dplyr select
+#' @importFrom dplyr arrange
+#' @importFrom dplyr desc
 #' @importFrom stats na.omit
 #' @importFrom shiny updateSelectInput
 #' @importFrom shiny updateSliderInput
@@ -437,6 +439,7 @@ cite_references <- function() {
       if (nrow(after_period_selection()) > 0 &
           nrow(after_period_selection()) <= 250) {
         reflist <- after_period_selection() %>%
+          dplyr::arrange(dplyr::desc(year)) %>%
           dplyr::select(-field)
       } else {
         reflist <- data.frame(

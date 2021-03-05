@@ -28,7 +28,7 @@ filter_references <- function(dataset,
     filter_type %in% c("selection", "pattern", "range", "value")
   )
 
-  if (filter_value[1] == "") {
+  if (filter_value[1] == "" | nrow(dataset) == 0) {
     dataset
   } else {
     if (filter_type == "selection") {

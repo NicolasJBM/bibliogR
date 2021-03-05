@@ -10,12 +10,11 @@
 #' @importFrom stringr str_detect
 
 
-format_citations <- function(citations, pages) {
+format_citations <- function(citations, format, pages) {
   pg <- dplyr::case_when(
     stringr::str_detect(pages, "-") ~ "pp.",
     TRUE ~ "p."
   )
-
   dplyr::case_when(
     length(citations) == 1 &
       format == "create" &

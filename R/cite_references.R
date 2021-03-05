@@ -332,7 +332,10 @@ cite_references <- function() {
 
     # Update filters
     shiny::observe({
-      fields <- unique(c("", stats::na.omit(after_author_selection()$field)))
+      
+      fields <- unique(c("", sort(stats::na.omit(
+        after_author_selection()$field
+      ))))
       if (input$slctfield %in% fields) {
         tmpfield <- input$slctfield
       } else {
@@ -344,9 +347,9 @@ cite_references <- function() {
         selected = tmpfield
       )
 
-      journals <- unique(c("", stats::na.omit(
+      journals <- unique(c("", sort(stats::na.omit(
         after_author_selection()$journal
-      )))
+      ))))
       if (input$slctjournal %in% journals) {
         tmpjournal <- input$slctjournal
       } else {
@@ -358,12 +361,22 @@ cite_references <- function() {
         selected = tmpjournal
       )
 
-      minyear <- min(stats::na.omit(
-        as.numeric(after_author_selection()$year)
-      ))
-      maxyear <- max(stats::na.omit(
-        as.numeric(after_author_selection()$year)
-      ))
+      if (nrow(after_author_selection())){
+        minyear <- min(stats::na.omit(
+          as.numeric(after_author_selection()$year)
+        ))
+        maxyear <- max(stats::na.omit(
+          as.numeric(after_author_selection()$year)
+        ))
+      } else {
+        minyear <- min(stats::na.omit(
+          as.numeric(references$year)
+        ))
+        maxyear <- max(stats::na.omit(
+          as.numeric(references$year)
+        ))
+      }
+      
       shiny::updateSliderInput(
         session, "slctperiod",
         min = minyear,
@@ -383,17 +396,16 @@ cite_references <- function() {
 
     # Display the distribution of papers across fields or journals
     output$fieldcount <- shiny::renderPlot({
-      if (length(unique(after_period_selection())) > 1) {
+      shiny::req(nrow(after_period_selection()) > 0)
+      if (length(unique(stats::na.omit(after_period_selection()$field))) > 1) {
         level <- "field"
       } else {
         level <- "journal"
       }
-
       baseplot <- after_period_selection() %>%
         dplyr::select(level = dplyr::all_of(level)) %>%
         dplyr::count(level) %>%
         stats::na.omit()
-
       if (nrow(baseplot) > 0) {
         set_levels <- baseplot$level[order(baseplot$n, decreasing = FALSE)]
         baseplot %>%
@@ -408,6 +420,7 @@ cite_references <- function() {
 
     # Display the distribution of papers across years
     output$yearcount <- renderPlot({
+      shiny::req(nrow(after_period_selection()) > 0)
       baseplot <- after_period_selection() %>%
         dplyr::count(year) %>%
         stats::na.omit() %>%
@@ -421,12 +434,13 @@ cite_references <- function() {
     })
 
     output$reflist <- DT::renderDataTable({
-      if (nrow(after_period_selection()) <= 250) {
+      if (nrow(after_period_selection()) > 0 &
+          nrow(after_period_selection()) <= 250) {
         reflist <- after_period_selection() %>%
           dplyr::select(-field)
       } else {
         reflist <- data.frame(
-          key = "Please", title = "refine your search",
+          key = "Please", title = "adjust your search",
           author = NA, year = NA, journal = NA, issn = NA,
           volume = NA, number = NA, abstract = NA, keywords = NA
         )
@@ -444,12 +458,13 @@ cite_references <- function() {
 
     # Selection of references
     output$selection <- shiny::renderUI({
-      if (nrow(after_period_selection()) <= 250) {
+      if (nrow(after_period_selection()) > 0 &
+          nrow(after_period_selection()) <= 250) {
         reflist <- after_period_selection() %>%
           dplyr::select(-field)
       } else {
         reflist <- data.frame(
-          key = "Please,", title = "refine your search",
+          key = "Please,", title = "adjust your search",
           author = NA, year = NA, journal = NA, issn = NA,
           volume = NA, number = NA, abstract = NA, keywords = NA
         )
@@ -468,6 +483,7 @@ cite_references <- function() {
     shiny::observeEvent(input$insert, {
       citations <- format_citations(
         citations = input$selection,
+        format = input$format,
         pages = input$pages
       )
       rstudioapi::insertText(citations)

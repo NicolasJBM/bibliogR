@@ -1,14 +1,19 @@
-Name: Combine
+Name: 1-Create
+Description: Create a first reference file
+Binding: create_reference_file
+Interactive: true
+
+Name: 2-Combine
 Description: Get references from EBSCO or Elsevier.
 Binding: combine_references
 Interactive: true
 
-Name: Import
+Name: 3-Import
 Description: Import the full list of references in the package.
 Binding: import_references
 Interactive: true
 
-Name: Cite
+Name: 4-Cite
 Description: Search and insert citations.
 Binding: cite_references
 Interactive: true

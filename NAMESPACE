@@ -2,6 +2,7 @@
 
 export(cite_references)
 export(combine_references)
+export(create_reference_file)
 export(gen_bib)
 export(import_references)
 importFrom(DT,JS)

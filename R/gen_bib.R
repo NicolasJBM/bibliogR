@@ -1,7 +1,10 @@
 #' @name gen_bib
 #' @title Generate the Reference File
 #' @author Nicolas Mangin
-#' @description Create the .bib reference file of the markdown document in which the function is embedded and add it in the working directory. Place this function in the setup of the markdown document.
+#' @description
+#' Create the .bib reference file of the markdown document in which
+#' the function is embedded and add it in the working directory.
+#' Place this function in the setup of the markdown document.
 #' @param wdir         Character string. Path to the desired working directory.
 #' @param keys         Character vector. List of bibtex keys to export as a bibtex database.
 #' @param journal_list Logical. Whether a list of journals with the number of citations should be produced.

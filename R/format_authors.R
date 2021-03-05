@@ -1,7 +1,8 @@
 #' @name format_authors
 #' @title Format Author Names
 #' @author Nicolas Mangin
-#' @description Format authors' names so that they fit with bibtex specifications.
+#' @description
+#' Format authors' names so that they fit with bibtex specifications.
 #' @param author  Character. String with names of authors. Authors are separated by " and ".
 #' @return A character string with all the author names properly formated.
 #' @importFrom stringr str_to_title

@@ -1,7 +1,8 @@
 #' @name cite_references
 #' @title Insert Citations in Text
 #' @author Nicolas Mangin
-#' @description Gadget for the selection and insertion of citations in Rmarkdown documents.
+#' @description
+#' Gadget for the selection and insertion of citations in Rmarkdown documents.
 #' @importFrom miniUI miniPage
 #' @importFrom miniUI gadgetTitleBar
 #' @importFrom miniUI miniTabstripPanel
@@ -93,8 +94,14 @@
 #' @importFrom ggplot2 aes
 #' @export
 
+
 cite_references <- function() {
-  ui <- miniPage(
+
+  ############################################################################
+  # Interface
+  ui <- miniUI::miniPage(
+
+    # CSS formating
     theme = bslib::bs_theme(
       bootswatch = "flatly",
       base_font = bslib::font_google("Open Sans"),
@@ -102,87 +109,142 @@ cite_references <- function() {
       "enable-shadows" = TRUE,
       spacer = "0.25rem"
     ),
-
-    tags$head(
-      tags$style(
+    shiny::tags$head(
+      shiny::tags$style(
         type = "text/css",
         "body {font-size: 0.75em;} "
       ),
-      tags$style(
-        HTML(".shiny-notification {
-              position:fixed;top: 30%;left: 0%;right: 0%;
-           }")
+      shiny::tags$style(
+        shiny::HTML(
+          ".shiny-notification {
+            position:fixed;top: 30%;left: 0%;right: 0%;
+          }"
+        )
       )
     ),
 
-    gadgetTitleBar("Insert citations"),
-    miniTabstripPanel(
 
-      # Panel where the author selects references in the filtered list
-      miniTabPanel(
+    miniUI::gadgetTitleBar("Insert citations"),
+    miniUI::miniTabstripPanel(
+
+      # Search tab
+      miniUI::miniTabPanel(
         "Search",
-        icon = icon("search"),
-        miniContentPanel(
-          fillCol(
+        icon = shiny::icon("search"),
+        miniUI::miniContentPanel(
+          shiny::fillCol(
             flex = c(7, 1, 1, 2),
-            fillRow(
+            shiny::fillRow(
               flex = c(3, 2),
-              fillCol(
+              shiny::fillCol(
                 flex = c(1, 1, 1, 1, 1),
-                uiOutput("filttitle"),
-                uiOutput("filtabstract"),
-                uiOutput("filtfield"),
-                uiOutput("filtjournal"),
-                selectizeInput(
+                shiny::textInput(
+                  "slcttitle",
+                  "Has in title:",
+                  value = "",
+                  width = "100%"
+                ),
+                shiny::textInput(
+                  "slctabstract",
+                  "Has in abstract:",
+                  value = "",
+                  width = "100%"
+                ),
+                shiny::selectInput(
+                  "slctfield",
+                  "Select the field:",
+                  choices = "",
+                  selected = "",
+                  multiple = FALSE,
+                  width = "100%"
+                ),
+                shiny::selectInput(
+                  "slctjournal",
+                  "Select the journal:",
+                  choices = "",
+                  selected = "",
+                  multiple = FALSE,
+                  width = "100%"
+                ),
+                shiny::textInput(
                   "slctauthor",
                   "Authors:",
-                  choices = NULL,
-                  multiple = TRUE,
+                  value = "",
                   width = "100%"
                 )
               ),
-              fillCol(
+              shiny::fillCol(
                 flex = c(1, 8),
-                htmlOutput("citecount"),
-                plotOutput("fieldcount", height = "100%", width = "100%")
+                shiny::htmlOutput("citecount"),
+                shiny::plotOutput(
+                  "fieldcount",
+                  height = "100%",
+                  width = "100%"
+                )
               )
             ),
-            uiOutput("filtperiod"),
-            tags$br(),
-            plotOutput("yearcount", height = "100px")
+            shiny::sliderInput(
+              "slctperiod",
+              "Period:",
+              min = 0,
+              max = 3000,
+              value = c(0, 3000),
+              step = 1,
+              width = "100%",
+              sep = ""
+            ),
+            shiny::tags$br(),
+            shiny::plotOutput(
+              "yearcount",
+              height = "100px"
+            )
           )
         )
       ),
 
-      # Panel where the author checks references in the filtered list
-      miniTabPanel(
+      # Selection tab
+      miniUI::miniTabPanel(
         "Select",
-        icon = icon("list"),
-        miniContentPanel(
-          fillCol(
+        icon = shiny::icon("list"),
+        miniUI::miniContentPanel(
+          shiny::fillCol(
             flex = c(2, 8),
-            fluidRow(
-              column(6, uiOutput("selection", width = "100%")),
-              column(2, selectInput(
-                "format",
-                "Format:",
-                choices = c("create", "add", "subject"),
-                selected = "create",
-                multiple = FALSE
-              )),
-              column(2, textInput("pages", "Pages:", value = "")),
-              column(
+            shiny::fluidRow(
+              shiny::column(
+                6,
+                shiny::uiOutput("selection", width = "100%")
+              ),
+              shiny::column(
                 2,
-                actionButton(
-                  "insert", "Insert",
+                shiny::selectInput(
+                  "format",
+                  "Format:",
+                  choices = c("create", "add", "subject"),
+                  selected = "create",
+                  multiple = FALSE
+                )
+              ),
+              shiny::column(
+                2,
+                shiny::textInput("pages", "Pages:", value = "")
+              ),
+              shiny::column(
+                2,
+                shiny::actionButton(
+                  "insert",
+                  "Insert",
                   width = "100%",
-                  icon("quote-right"),
+                  shiny::icon("quote-right"),
                   style =
                     "background-color: #009933; color: #FFF; margin-top: 25px"
                 )
               )
             ),
-            DT::dataTableOutput("reflist", width = "100%", height = "100%")
+            DT::dataTableOutput(
+              "reflist",
+              width = "100%",
+              height = "100%"
+            )
           )
         )
       )
@@ -190,7 +252,8 @@ cite_references <- function() {
   )
 
 
-
+  ##############################################################################
+  # Server
   server <- function(input, output, session) {
 
     # Bind variables for dplyr
@@ -204,215 +267,178 @@ cite_references <- function() {
     issn <- NULL
     volume <- NULL
     number <- NULL
-    desc <- NULL
     references <- NULL
     n <- NULL
     field <- NULL
 
     # Load the local database of references
-    # (imported with function import_references)
-    load(paste0(find.package("bibliogR"), "/references.RData"))
-    observe({
-      authors <- references$author %>%
-        str_split(" ") %>%
-        unlist() %>%
-        setdiff("and") %>%
-        str_remove_all(",") %>%
-        str_remove_all("\\.") %>%
-        unique() %>%
-        sort() %>%
-        stringr::str_remove_all("[-0-9]")
+    shiny::withProgress(
+      value = 1 / 4,
+      message = "Loading references", {
+        load(paste0(find.package("bibliogR"), "/references.RData"))
 
-      authors <- authors[nchar(authors) > 1]
+        shiny::incProgress(1 / 4, message = "Selecting information")
 
-      updateSelectizeInput(
-        session,
-        "slctauthor",
-        choices = authors,
-        server = TRUE
-      )
-    })
+        references <- references %>%
+          dplyr::select(
+            key, title, author, year,
+            field, journal, issn,
+            volume, number,
+            abstract, keywords
+          )
 
-    # Prepare reactive values
-    values <- reactiveValues()
+        shiny::incProgress(1 / 4, message = "Initialize user input")
 
-    withProgress(
-      message = "Retrieve the database of references",
-      detail = "This may take a while...", {
-        values$references <- references
-        incProgress(1 / 3)
-        values$years <- c(
-          min(na.omit(as.numeric(references$year))),
-          max(na.omit(as.numeric(references$year)))
+        fields <- unique(c("", stats::na.omit(references$field)))
+        shiny::updateSelectInput(
+          session, "slctfield",
+          choices = fields,
+          selected = ""
         )
-        incProgress(1 / 3)
+
+        journals <- unique(c("", stats::na.omit(references$journal)))
+        shiny::updateSelectInput(
+          session, "slctjournal",
+          choices = journals,
+          selected = ""
+        )
+
+        minyear <- min(stats::na.omit(as.numeric(references$year)))
+        maxyear <- max(stats::na.omit(as.numeric(references$year)))
+        shiny::updateSliderInput(
+          session, "slctperiod",
+          min = minyear,
+          max = maxyear,
+          value = c(minyear, maxyear)
+        )
+
+        shiny::incProgress(1 / 4, message = "Done!")
       }
     )
 
-    # Prepare filters
-
-    ############################################################################
-    # The first three filters follow distinct patterns
-    # Key
-    afterfiltkey <- reactive({
-      filter <- input$slctkey
-      if (is.null(filter)) {
-        values$references
-      } else if (filter == "") {
-        values$references
-      } else {
-        dplyr::filter(values$references, key == filter)
-      }
-    })
-
-    # Authors
-    afterfiltauthors <- reactive({
-      if (is.null(input$slctauthor)) {
-        filter <- NULL
-      } else {
-        filter <- paste0("(^|\\s)", input$slctauthor, "(,|\\s)")
-      }
-      if (is.null(filter)) {
-        afterfiltkey()
-      } else if (filter[[1]] == "") {
-        afterfiltkey()
-      } else {
-        authors <- stringr::str_to_lower(filter)
-        base <- afterfiltkey()
-        for (i in seq_len(length(authors))) {
-          base <- dplyr::filter(
-            base,
-            str_detect(stringr::str_to_lower(base$author), authors[i])
-          )
-        }
-        base
-      }
-    })
-
-    # Period
-    output$filtperiod <- renderUI({
-      sliderInput(
-        "slctperiod",
-        "Period:",
-        min = values$years[1],
-        max = values$years[2],
-        value = c(values$years[1], values$years[2]),
-        step = 1,
-        width = "100%",
-        sep = ""
-      )
-    })
-    afterfiltperiod <- reactive({
-      if (!is.null(input$slctperiod)) {
-        afterfiltauthors() %>%
-          mutate(year = as.numeric(year)) %>%
-          dplyr::filter(
-            year >= input$slctperiod[1],
-            year <= input$slctperiod[2]
-          ) %>%
-          mutate(year = as.character(year))
-      } else {
-        afterfiltauthors()
-      }
-    })
-    ############################################################################
-
-
-    # Field
-    output$filtfield <- renderUI({
-      make_filter(
-        dataset = afterfiltperiod(), variable = "field",
-        id = "slctfield", label = "Field:"
-      )
-    })
-    afterfiltfield <- reactive({
-      filter_data(
-        dataset = afterfiltperiod(), variable = "field",
-        filt = input$slctfield, type = "selection"
-      )
-    })
-
-    # Journal
-    output$filtjournal <- renderUI({
-      make_filter(
-        dataset = afterfiltfield(), variable = "journal",
-        id = "slctjournal", label = "Journal:"
-      )
-    })
-    afterfiltjournal <- reactive({
-      filter_data(
-        dataset = afterfiltfield(), variable = "journal",
-        filt = input$slctjournal, type = "selection"
-      )
-    })
-
-    # Title
-    output$filttitle <- renderUI({
-      textInput("slcttitle", "In title:", value = "", width = "100%")
-    })
-
-    afterfilttitle <- reactive({
-      filter_data(
-        dataset = afterfiltjournal(), variable = "title",
-        filt = input$slcttitle, type = "text"
-      )
-    })
-
-    # Abstract
-    output$filtabstract <- renderUI({
-      textInput("slctabstract", "In abstract:", value = "", width = "100%")
-    })
-
-    afterfiltabstract <- reactive({
-      filter_data(
-        dataset = afterfilttitle(), variable = "abstract",
-        filt = input$slctabstract, type = "text"
-      )
-    })
-
-    # keywords
-    output$slctkeyword <- renderUI({
-      textInput("slctkeyword", "In keywords:", value = "", width = "100%")
-    })
-
-    afterfiltkeyword <- reactive({
-      filter_data(
-        dataset = afterfiltabstract(), variable = "keywords",
-        filt = input$slctkeyword, type = "text"
-      )
-    })
-
-
-    ############################################################################
     # Apply filters
-    filtered <- reactive({
-      afterfiltkeyword() %>%
-        dplyr::select(
-          key, title, author, year, field, journal, issn,
-          volume, number, abstract, keywords
-        ) %>%
-        dplyr::arrange(desc(year), author)
+    after_title_selection <- reactive({
+      references %>%
+        filter_references(
+          variable = "title",
+          filter_value = input$slcttitle,
+          filter_type = "pattern"
+        )
     })
 
+    after_abstract_selection <- reactive({
+      after_title_selection() %>%
+        filter_references(
+          variable = "abstract",
+          filter_value = input$slctabstract,
+          filter_type = "pattern"
+        )
+    })
+
+    after_field_selection <- reactive({
+      after_abstract_selection() %>%
+        filter_references(
+          variable = "field",
+          filter_value = input$slctfield,
+          filter_type = "selection"
+        )
+    })
+
+    after_journal_selection <- reactive({
+      after_field_selection() %>%
+        filter_references(
+          variable = "journal",
+          filter_value = input$slctjournal,
+          filter_type = "selection"
+        )
+    })
+
+    after_author_selection <- reactive({
+      after_journal_selection() %>%
+        filter_references(
+          variable = "author",
+          filter_value = input$slctauthor,
+          filter_type = "pattern"
+        )
+    })
+
+    after_period_selection <- reactive({
+      after_author_selection() %>%
+        filter_references(
+          variable = "year",
+          filter_value = input$slctperiod,
+          filter_type = "range"
+        )
+    })
+
+    # Update filters
+    shiny::observe({
+
+      fields <- unique(c("", stats::na.omit(after_author_selection()$field)))
+      if (input$slctfield %in% fields) {
+        tmpfield <- input$slctfield
+      } else {
+        tmpfield <- ""
+      }
+      shiny::updateSelectInput(
+        session, "slctfield",
+        choices = fields,
+        selected = tmpfield
+      )
+
+      journals <- unique(c("", stats::na.omit(
+        after_author_selection()$journal)))
+      if (input$slctjournal %in% journals) {
+        tmpjournal <- input$slctjournal
+      } else {
+        tmpjournal <- ""
+      }
+      shiny::updateSelectInput(
+        session, "slctjournal",
+        choices = journals,
+        selected = tmpjournal
+      )
+
+      minyear <- min(stats::na.omit(
+        as.numeric(after_author_selection()$year)))
+      if (input$slctperiod[1] >= minyear) {
+        tmpminyear <- input$slctperiod[1]
+      } else {
+        tmpminyear <- minyear
+      }
+      maxyear <- max(stats::na.omit(
+        as.numeric(after_author_selection()$year)))
+      if (input$slctperiod[2] <= maxyear) {
+        tmpmaxyear <- input$slctperiod[2]
+      } else {
+        tmpmaxyear <- maxyear
+      }
+      shiny::updateSliderInput(
+        session, "slctperiod",
+        min = minyear,
+        max = maxyear,
+        value = c(tmpminyear, tmpmaxyear)
+      )
+    })
 
     # Count the number of references filtered
-    output$citecount <- renderUI({
-      HTML(paste0(
+    output$citecount <- shiny::renderUI({
+      shiny::HTML(paste0(
         "<center>Number of references: ",
-        nrow(filtered()),
+        nrow(after_period_selection()),
         "</center>"
       ))
     })
 
-    output$fieldcount <- renderPlot({
+    # Display the distribution of papers across fields or journals
+    output$fieldcount <- shiny::renderPlot({
       if (is.null(input$slctfield)) {
         fccond <- TRUE
       } else {
         fccond <- (is.na(input$slctfield) | input$slctfield == "")
       }
       if (fccond) {
-        baseplot <- filtered() %>%
-          dplyr::filter(!(field %in% c("Field", "Other"))) %>%
+        baseplot <- after_period_selection() %>%
           dplyr::count(field) %>%
           stats::na.omit()
         if (nrow(baseplot) > 0) {
@@ -425,7 +451,7 @@ cite_references <- function() {
             ggplot2::theme_minimal()
         }
       } else {
-        baseplot <- filtered() %>%
+        baseplot <- after_period_selection() %>%
           dplyr::filter(nchar(journal) > 3) %>%
           dplyr::count(journal) %>%
           stats::na.omit()
@@ -441,8 +467,9 @@ cite_references <- function() {
       }
     })
 
+    # Display the distribution of papers across years
     output$yearcount <- renderPlot({
-      baseplot <- filtered() %>%
+      baseplot <- after_period_selection() %>%
         dplyr::count(year) %>%
         stats::na.omit() %>%
         dplyr::mutate(year = as.numeric(year))
@@ -455,8 +482,8 @@ cite_references <- function() {
     })
 
     output$reflist <- DT::renderDataTable({
-      if (nrow(filtered()) <= 250) {
-        reflist <- filtered() %>%
+      if (nrow(after_period_selection()) <= 250) {
+        reflist <- after_period_selection() %>%
           dplyr::select(-field)
       } else {
         reflist <- data.frame(
@@ -477,19 +504,19 @@ cite_references <- function() {
     })
 
     # Selection of references
-    output$selection <- renderUI({
-      if (nrow(filtered()) <= 250) {
-        reflist <- filtered() %>%
+    output$selection <- shiny::renderUI({
+      if (nrow(after_period_selection()) <= 250) {
+        reflist <- after_period_selection() %>%
           dplyr::select(-field)
       } else {
         reflist <- data.frame(
-          key = "Please", title = "refine your search",
+          key = "Please,", title = "refine your search",
           author = NA, year = NA, journal = NA, issn = NA,
           volume = NA, number = NA, abstract = NA, keywords = NA
         )
       }
 
-      selectInput(
+      shiny::selectInput(
         "selection",
         "Selection",
         choices = reflist$key,
@@ -498,170 +525,22 @@ cite_references <- function() {
       )
     })
 
-    # Cite
-    observeEvent(input$insert, {
-      pg <- case_when(
-        str_detect(input$pages, "-") ~ "pp.",
-        TRUE ~ "p."
-      )
-      citations <- case_when(
-        length(input$selection) == 1 &
-          input$format == "create" &
-          input$pages == "" ~
-        paste0("[@", input$selection[[1]], "]"),
-        length(input$selection) == 1 &
-          input$format == "create" &
-          input$pages != "" ~
-        paste0("[@", input$selection[[1]], ", ", pg, input$pages, "]"),
-        length(input$selection) >= 2 &
-          input$format == "create" ~
-        paste0("[@", paste(input$selection, collapse = "; @"), "]"),
-        length(input$selection) == 1 &
-          input$format == "add" &
-          input$pages == "" ~
-        paste0("; @", input$selection[[1]]),
-        length(input$selection) == 1 &
-          input$format == "add" &
-          input$pages != "" ~
-        paste0("; @", input$selection[[1]], ", ", pg, input$pages),
-        length(input$selection) >= 1 &
-          input$format == "add" ~
-        paste0("; @", paste(input$selection, collapse = "; @")),
-        TRUE ~ paste0("@", input$selection[[1]])
+    # Format and insert the citations
+    shiny::observeEvent(input$insert, {
+      citations <- format_citations(
+        citations = input$selection,
+        pages = input$pages
       )
       rstudioapi::insertText(citations)
     })
 
-
-    observeEvent(input$done, {
-      stopApp()
+    shiny::observeEvent(input$done, {
+      shiny::stopApp()
     })
   }
-  runGadget(ui, server, viewer = paneViewer(minHeight = "maximize"))
-}
-
-
-
-
-
-# Function to generate dynamic filters in user interface
-make_filter <- function(dataset, variable, id, label) {
-  choices <- sort(
-    as.character(unique(c(unlist(dataset[, variable]), ""))),
-    decreasing = FALSE
-  )
-  selectInput(
-    id,
-    label,
-    choices = choices,
-    selected = NULL,
-    multiple = FALSE,
-    width = "100%"
-  )
-}
-
-
-# Functions to apply dynamically filters
-filter_data <- function(dataset, variable, filt, type) {
-  if (is.null(filt)) {
-    dataset
-  } else if (filt == "") {
-    dataset
-  } else {
-    if (type == "selection") {
-      dplyr::filter(dataset, str_detect(unlist(dataset[, variable]), filt))
-    } else {
-      terms <- stringr::str_to_lower(unlist(str_split(filt, " ")))
-      terms <- stringr::str_replace_all(terms, "_", " ")
-      base <- dataset
-      for (term in terms) {
-        base <- dplyr::filter(
-          base,
-          str_detect(stringr::str_to_lower(unlist(base[, variable])), term)
-        )
-      }
-      base
-    }
-  }
-}
-
-
-# Collapsible entries in reference list
-# source: http://www.reigo.eu/2018/04/extending-dt-child-row-example/
-withchildrow <- function(x, vars = NULL, opts = NULL, ...) {
-  names_x <- names(x)
-  if (is.null(vars)) stop("'vars' must be specified!")
-  pos <- match(vars, names_x)
-  if (any(furrr::future_map_chr(x[, pos], typeof) == "list")) {
-    stop("list columns are not supported in datatable2()")
-  }
-
-  pos <- pos[pos <= ncol(x)] + 1
-  rownames(x) <- NULL
-  if (nrow(x) > 0) x <- cbind(" " = "&oplus;", x)
-
-  # options
-  opts <- c(
-    opts,
-    list(
-      columnDefs = list(
-        list(visible = FALSE, targets = c(0, pos)),
-        list(orderable = FALSE, className = "details-control", targets = 1),
-        list(className = "dt-left", targets = 1:3),
-        list(className = "dt-right", targets = 4:ncol(x))
-      )
-    )
-  )
-
-  DT::datatable(
-    x,
-    ...,
-    escape = -2,
-    options = opts,
-    callback = JS(.callback2(x = x, pos = c(0, pos)))
-  )
-}
-
-.callback2 <- function(x, pos = NULL) {
-  part1 <- "table.column(1).nodes().to$().css({cursor: 'pointer'});"
-
-  part2 <- .child_row_table2(x, pos = pos)
-
-  part3 <-
-    "
-   table.on('click', 'td.details-control', function() {
-    var td = $(this), row = table.row(td.closest('tr'));
-    if (row.child.isShown()) {
-      row.child.hide();
-      td.html('&oplus;');
-    } else {
-      row.child(format(row.data())).show();
-      td.html('&ominus;');
-    }
-  });"
-
-  paste(part1, part2, part3)
-}
-
-.child_row_table2 <- function(x, pos = NULL) {
-  names_x <- paste0(names(x), ":")
-  text <- "
-  var format = function(d) {
-    text = '<div><table >' +
-  "
-
-  for (i in seq_along(pos)) {
-    text <- paste(text, glue::glue(
-      "'<tr>' +
-          '<td>' + '{names_x[pos[i]]}' + '</td>' +
-          '<td>' + d[{pos[i]}] + '</td>' +
-        '</tr>' + "
-    ))
-  }
-
-  paste0(
-    text,
-    "'</table></div>'
-      return text;};"
+  shiny::runGadget(
+    ui,
+    server,
+    viewer = shiny::paneViewer(minHeight = "maximize")
   )
 }

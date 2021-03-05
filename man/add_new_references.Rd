@@ -7,15 +7,16 @@
 add_new_references(complement, references)
 }
 \arguments{
-\item{complement}{dataframe. References to be added}
+\item{complement}{dataframe. References to be added.}
 
-\item{references}{dataframe. References to which the references are to be added}
+\item{references}{dataframe. References to which the references are added.}
 }
 \value{
 A dataframe of references
 }
 \description{
-Add imported references with unique keys to the initial list of references.
+Add imported references with unique keys to
+the initial list of references.
 }
 \author{
 Nicolas Mangin

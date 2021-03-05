@@ -33,7 +33,8 @@ match_new_reference(
 A match between keys.
 }
 \description{
-Determine whether a reference to be added is already in the initial list of references
+Determine whether a reference to be added is already in
+the initial list of references
 }
 \author{
 Nicolas Mangin

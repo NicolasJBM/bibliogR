@@ -62,7 +62,6 @@
 
 
 import_references <- function() {
-
   options(shiny.maxRequestSize = 500 * 1024^2)
 
   ui <- miniPage(

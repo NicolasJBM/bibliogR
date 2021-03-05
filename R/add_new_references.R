@@ -1,9 +1,11 @@
 #' @name add_new_references
 #' @title Append new references
 #' @author Nicolas Mangin
-#' @description Add imported references with unique keys to the initial list of references.
-#' @param complement dataframe. References to be added
-#' @param references dataframe. References to which the references are to be added
+#' @description
+#' Add imported references with unique keys to
+#' the initial list of references.
+#' @param complement dataframe. References to be added.
+#' @param references dataframe. References to which the references are added.
 #' @return A dataframe of references
 #' @importFrom stringr str_remove
 #' @importFrom stringr str_remove_all
@@ -19,7 +21,8 @@ add_new_references <- function(complement, references) {
   complement$key <- ""
   complement$order <- ""
   addition <- nrow(complement)
-  progress_bar <- utils::txtProgressBar(min = 0, max = addition, style = 3, char = "=")
+  progress_bar <- utils::txtProgressBar(
+    min = 0, max = addition, style = 3, char = "=")
   for (i in 1:addition) {
     utils::setTxtProgressBar(progress_bar, value = i)
     keys <- references$key

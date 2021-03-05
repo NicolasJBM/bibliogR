@@ -1,7 +1,10 @@
 #' @name combine_references
 #' @title Import References and Combine Them
 #' @author Nicolas Mangin
-#' @description Application gathering references from different sources, identifying potential duplicates, and combining them in a single reference file.
+#' @description
+#' Application gathering references from different sources,
+#' identifying potential duplicates, and combining them in
+#' a single reference file.
 #' @return An Excel file with the new complete reference list.
 #' @importFrom miniUI miniPage
 #' @importFrom miniUI gadgetTitleBar
@@ -82,7 +85,6 @@
 #' @export
 
 combine_references <- function() {
-
   options(shiny.maxRequestSize = 500 * 1024^2)
 
   ui <- miniUI::miniPage(
@@ -414,7 +416,7 @@ combine_references <- function() {
 
           showModal(modalDialog(
             title = "Your references have been combined and exported!",
-            "You can now leave the application and import them.",
+            "You can now leave the application and import the file.",
             easyClose = TRUE,
             footer = NULL
           ))

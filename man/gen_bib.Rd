@@ -19,7 +19,9 @@ gen_bib(wdir = NULL, keys = NULL, journal_list = FALSE, author_list = FALSE)
 A bib file in the same folder as the Rmarkdown document.
 }
 \description{
-Create the .bib reference file of the markdown document in which the function is embedded and add it in the working directory. Place this function in the setup of the markdown document.
+Create the .bib reference file of the markdown document in which
+the function is embedded and add it in the working directory.
+Place this function in the setup of the markdown document.
 }
 \author{
 Nicolas Mangin

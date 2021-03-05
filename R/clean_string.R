@@ -1,7 +1,8 @@
 #' @name clean_string
 #' @title Clean and simplify strings
 #' @author Nicolas Mangin
-#' @description Format authors' names so that they fit with bibtex specifications.
+#' @description
+#' Format authors' names so that they fit with bibtex specifications.
 #' @param x  Character. String which should be cleaned
 #' @param simplify Logical. Whether only letters should be kept.
 #' @return A character string with only letters

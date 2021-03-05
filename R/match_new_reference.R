@@ -1,7 +1,9 @@
 #' @name match_new_reference
 #' @title Identify Potential Matches in References
 #' @author Nicolas Mangin
-#' @description Determine whether a reference to be added is already in the initial list of references
+#' @description
+#' Determine whether a reference to be added is already in
+#' the initial list of references
 #' @param tmpkey     Character string. Temporary key.
 #' @param journal    Character string. Journal of the document to be matched.
 #' @param year       Integer. Year of the document to be matched.

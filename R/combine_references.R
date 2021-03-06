@@ -407,5 +407,6 @@ combine_references <- function() {
   shiny::runGadget(
     ui,
     server,
-    viewer = shiny::paneViewer(minHeight = "maximize"))
+    viewer = shiny::paneViewer(minHeight = "maximize")
+  )
 }

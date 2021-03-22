@@ -334,9 +334,8 @@ cite_references <- function() {
 
     # Update filters
     shiny::observe({
-      
       fields <- unique(c("", sort(stats::na.omit(
-        after_author_selection()$field
+        after_abstract_selection()$field
       ))))
       if (input$slctfield %in% fields) {
         tmpfield <- input$slctfield
@@ -350,7 +349,7 @@ cite_references <- function() {
       )
 
       journals <- unique(c("", sort(stats::na.omit(
-        after_author_selection()$journal
+        after_field_selection()$journal
       ))))
       if (input$slctjournal %in% journals) {
         tmpjournal <- input$slctjournal
@@ -363,7 +362,7 @@ cite_references <- function() {
         selected = tmpjournal
       )
 
-      if (nrow(after_author_selection())){
+      if (nrow(after_author_selection())) {
         minyear <- min(stats::na.omit(
           as.numeric(after_author_selection()$year)
         ))
@@ -378,7 +377,7 @@ cite_references <- function() {
           as.numeric(references$year)
         ))
       }
-      
+
       shiny::updateSliderInput(
         session, "slctperiod",
         min = minyear,
@@ -437,7 +436,7 @@ cite_references <- function() {
 
     output$reflist <- DT::renderDataTable({
       if (nrow(after_period_selection()) > 0 &
-          nrow(after_period_selection()) <= 250) {
+        nrow(after_period_selection()) <= 250) {
         reflist <- after_period_selection() %>%
           dplyr::arrange(dplyr::desc(year)) %>%
           dplyr::select(-field)
@@ -462,7 +461,7 @@ cite_references <- function() {
     # Selection of references
     output$selection <- shiny::renderUI({
       if (nrow(after_period_selection()) > 0 &
-          nrow(after_period_selection()) <= 250) {
+        nrow(after_period_selection()) <= 250) {
         reflist <- after_period_selection() %>%
           dplyr::select(-field)
       } else {

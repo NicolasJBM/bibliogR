@@ -102,6 +102,8 @@ gen_bib <- function(wdir = NULL,
       dplyr::sample_n(1) %>%
       dplyr::ungroup() %>%
       as.data.frame()
+    
+    refnbr <- nrow(bib)
 
     if (journal_list) {
       journal_rank <- bib$journal %>%
@@ -128,5 +130,7 @@ gen_bib <- function(wdir = NULL,
       tibble::column_to_rownames("key") %>%
       RefManageR::as.BibEntry() %>%
       RefManageR::WriteBib(file = "dat/ref.bib", append = FALSE)
-  }
+  } else refnbr <- 0
+  
+  return(refnbr)
 }

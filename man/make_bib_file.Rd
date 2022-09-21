@@ -5,14 +5,14 @@
 \title{Write a bib file}
 \usage{
 make_bib_file(
-  source_folder = NULL,
+  source_folders = NULL,
   references = NULL,
   destination_folder = NULL,
   file_name = "references.bib"
 )
 }
 \arguments{
-\item{source_folder}{Character. Path to the folder where the .Rmd files are.}
+\item{source_folders}{Character. Paths to the folders where the .Rmd files are.}
 
 \item{references}{Tibble. List of references.}
 

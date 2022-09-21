@@ -2,7 +2,7 @@
 #' @title Write a bib file
 #' @author Nicolas Mangin
 #' @description Function 
-#' @param source_folder Character. Path to the folder where the .Rmd files are.
+#' @param source_folders Character. Paths to the folders where the .Rmd files are.
 #' @param references Tibble. List of references.
 #' @param destination_folder Character. Path to the folder where the .bib file should be written.
 #' @param file_name Character. Name of the .bib file.
@@ -27,7 +27,7 @@
 
 
 make_bib_file <- function(
-  source_folder = NULL,
+  source_folders = NULL,
   references = NULL,
   destination_folder = NULL,
   file_name = "references.bib"
@@ -55,8 +55,14 @@ make_bib_file <- function(
   abstract <- NULL
   
   # Gather citations
-  if (base::is.null(source_folder)) source_folder <- base::getwd()
-  files <- base::list.files(source_folder, full.names = TRUE, recursive = TRUE)
+  if (base::is.null(source_folders)) source_folders <- base::getwd()
+  files <- c()
+  for (path in source_folders){
+    files <- c(
+      files,
+      base::list.files(path, full.names = TRUE, recursive = TRUE)
+    )
+  }
   rmdfiles <- tibble::tibble(
     rmdfiles = files[stringr::str_detect(files, ".Rmd$")]
   )

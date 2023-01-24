@@ -12,6 +12,7 @@
 #' @importFrom shiny selectInput
 #' @importFrom shiny sliderInput
 #' @importFrom shinyWidgets searchInput
+#' @importFrom shinydashboardPlus box
 #' @export
 
 
@@ -21,60 +22,65 @@ search_references_ui <- function(id){
     shiny::fluidRow(
       shiny::column(
         4,
-        shinyWidgets::searchInput(
-          inputId = ns("inrefkey"),
-          label = "Key:",
-          width = "100%",
-          placeholder = "Pattern to search",
-          btnSearch = shiny::icon("magnifying-glass"),
-          btnReset = shiny::icon("eraser")
-        ),
-        shinyWidgets::searchInput(
-          inputId = ns("inrefauthors"),
-          label = "Authors:",
-          width = "100%",
-          placeholder = "Pattern to search",
-          btnSearch = shiny::icon("magnifying-glass"),
-          btnReset = shiny::icon("eraser")
-        ),
-        shiny::sliderInput(
-          ns("slctrefperiod"),
-          "Period:",
-          min = 0,
-          max = 2021,
-          value = c(0,2021),
-          sep = "",
-          width = "100%"
-        ),
-        shinyWidgets::searchInput(
-          inputId = ns("inreftitle"),
-          label = "Title:",
-          width = "100%",
-          placeholder = "Pattern to search",
-          btnSearch = shiny::icon("magnifying-glass"),
-          btnReset = shiny::icon("eraser")
-        ),
-        shinyWidgets::searchInput(
-          inputId = ns("inrefabstract"),
-          label = "Abstract:",
-          width = "100%",
-          placeholder = "Pattern to search",
-          btnSearch = shiny::icon("magnifying-glass"),
-          btnReset = shiny::icon("eraser")
-        ),
-        shiny::selectInput(
-          ns("slctreffield"),
-          "Field:",
-          choices = "",
-          selected = "",
-          width = "100%"
-        ),
-        shiny::selectInput(
-          ns("slctrefjournal"),
-          "Journal:",
-          choices = "",
-          selected = "",
-          width = "100%"
+        shinydashboardPlus::box(
+          width = 12, title = "Filters", solidHeader = TRUE,
+          status = "navy", collapsible = FALSE, collapsed = FALSE,
+          height = "700px",
+          shinyWidgets::searchInput(
+            inputId = ns("inrefkey"),
+            label = "Key:",
+            width = "100%",
+            placeholder = "Pattern to search",
+            btnSearch = shiny::icon("magnifying-glass"),
+            btnReset = shiny::icon("eraser")
+          ),
+          shinyWidgets::searchInput(
+            inputId = ns("inrefauthors"),
+            label = "Authors:",
+            width = "100%",
+            placeholder = "Pattern to search",
+            btnSearch = shiny::icon("magnifying-glass"),
+            btnReset = shiny::icon("eraser")
+          ),
+          shiny::sliderInput(
+            ns("slctrefperiod"),
+            "Period:",
+            min = 0,
+            max = 2021,
+            value = c(0,2021),
+            sep = "",
+            width = "100%"
+          ),
+          shinyWidgets::searchInput(
+            inputId = ns("inreftitle"),
+            label = "Title:",
+            width = "100%",
+            placeholder = "Pattern to search",
+            btnSearch = shiny::icon("magnifying-glass"),
+            btnReset = shiny::icon("eraser")
+          ),
+          shinyWidgets::searchInput(
+            inputId = ns("inrefabstract"),
+            label = "Abstract:",
+            width = "100%",
+            placeholder = "Pattern to search",
+            btnSearch = shiny::icon("magnifying-glass"),
+            btnReset = shiny::icon("eraser")
+          ),
+          shiny::selectInput(
+            ns("slctreffield"),
+            "Field:",
+            choices = "",
+            selected = "",
+            width = "100%"
+          ),
+          shiny::selectInput(
+            ns("slctrefjournal"),
+            "Journal:",
+            choices = "",
+            selected = "",
+            width = "100%"
+          )
         )
       ),
       shiny::column(

@@ -40,27 +40,19 @@ filter_references <- function(
       
       if (filter_value[1]){
         
-        dplyr::filter(
-          dataset,
-          dataset[, variable] == filter_value[1]
-        )
+        dataset[dataset[, variable] == filter_value[1],]
         
       } else dataset
       
     } else if (filter_type == "selection") {
       
-      dplyr::filter(
-        dataset,
-        dataset[, variable] == filter_value
-      )
+      dataset[dataset[, variable] == filter_value,]
       
     } else if (filter_type == "multiple") {
       
       rgx <- base::paste(filter_value, collapse = "|")
-      dplyr::filter(
-        dataset,
-        stringr::str_detect(base::unlist(dataset[, variable]), rgx)
-      )
+      
+      dataset[stringr::str_detect(base::unlist(dataset[, variable]), rgx),]
       
     } else if (filter_type == "pattern") {
       
@@ -92,20 +84,14 @@ filter_references <- function(
       
     } else if (filter_type == "range") {
       
-      dplyr::filter(
-        dataset,
-        dataset[, variable] >= filter_value[1],
-        dataset[, variable] <= filter_value[2]
-      )
+      dataset <- dataset[dataset[, variable] >= filter_value[1],]
+      dataset[dataset[, variable] <= filter_value[2],]
       
     } else { # so if value
       
       if (!base::is.na(filter_value[1])){
         
-        dplyr::filter(
-          dataset,
-          dataset[, variable] == filter_value[1]
-        )
+        dataset[dataset[, variable] == filter_value[1],]
         
       } else dataset
       

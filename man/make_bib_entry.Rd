@@ -8,21 +8,27 @@ make_bib_entry(
   bibtype,
   key,
   author,
-  year,
   title,
   journal,
+  year,
+  month,
   volume,
   number,
   pages,
-  doi,
-  url,
   publisher,
   booktitle,
   editor,
+  institution,
+  school,
   address,
-  chapter,
   edition,
-  isbn
+  note,
+  doi,
+  url,
+  abstract,
+  keywords,
+  isbn,
+  issn
 )
 }
 \arguments{
@@ -32,11 +38,13 @@ make_bib_entry(
 
 \item{author}{Character.}
 
-\item{year}{Character.}
-
 \item{title}{Character.}
 
 \item{journal}{Character.}
+
+\item{year}{Character.}
+
+\item{month}{Character.#'}
 
 \item{volume}{Character.}
 
@@ -44,23 +52,33 @@ make_bib_entry(
 
 \item{pages}{Character.}
 
-\item{doi}{Character.}
-
-\item{url}{Character.}
-
 \item{publisher}{Character.}
 
 \item{booktitle}{Character.}
 
 \item{editor}{Character.}
 
-\item{address}{Character.}
+\item{institution}{Character.}
 
-\item{chapter}{Character.}
+\item{school}{Character.}
+
+\item{address}{Character.}
 
 \item{edition}{Character.}
 
+\item{note}{Character.}
+
+\item{doi}{Character.}
+
+\item{url}{Character.}
+
+\item{abstract}{Character.}
+
+\item{keywords}{Character.}
+
 \item{isbn}{Character.}
+
+\item{issn}{Character.}
 }
 \value{
 A character vector in which each elements is a row of a bib entry.

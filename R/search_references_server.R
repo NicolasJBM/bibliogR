@@ -1,21 +1,16 @@
 #' @name search_references_server
 #' @title Filter a list of references
 #' @author Nicolas Mangin
-#' @description Mudule allowing the user to find references using various filters.
+#' @description Module allowing the user to find references using various filters.
 #' @param id Character. ID of the module to connect the user interface to the appropriate server side.
 #' @param references Reactive. Function containing a list of references.
 #' @return Filtered list of references
+#' @importFrom DT renderDataTable
 #' @importFrom dplyr all_of
 #' @importFrom dplyr arrange
 #' @importFrom dplyr desc
 #' @importFrom dplyr mutate_all
 #' @importFrom dplyr select
-#' @importFrom DT renderDataTable
-#' @importFrom shiny moduleServer
-#' @importFrom shiny NS
-#' @importFrom shiny reactive
-#' @importFrom shiny updateSelectInput
-#' @importFrom shiny updateSliderInput
 #' @export
 
 

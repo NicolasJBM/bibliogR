@@ -33,26 +33,33 @@ make_bib_file <- function(
   file_name = "references.bib"
 ) {
   
-  bibtype <- NULL
+  text <- NULL
   key <- NULL
+  bibtype <- NULL
   author <- NULL
-  year <- NULL
   title <- NULL
   journal <- NULL
+  year <- NULL
+  month <- NULL
   volume <- NULL
   number <- NULL
   pages <- NULL
-  doi <- NULL
-  url <- NULL
   publisher <- NULL
   booktitle <- NULL
   editor <- NULL
+  institution <- NULL
+  school <- NULL
   address <- NULL
-  chapter <- NULL
   edition <- NULL
-  isbn <- NULL
-  text <- NULL
+  note <- NULL
+  doi <- NULL
+  url <- NULL
   abstract <- NULL
+  keywords <- NULL
+  isbn <- NULL
+  issn <- NULL
+  jnl <- NULL
+  field <- NULL
   
   # Gather citations
   if (base::is.null(source_folders)) source_folders <- base::getwd()
@@ -108,24 +115,10 @@ make_bib_file <- function(
       dplyr::ungroup() |>
       tibble::as_tibble() |>
       dplyr::select(
-        bibtype,
-        key,
-        author,
-        year,
-        title,
-        journal,
-        volume,
-        number,
-        pages,
-        doi,
-        url,
-        publisher,
-        booktitle,
-        editor,
-        address,
-        chapter,
-        edition,
-        isbn
+        bibtype, key, 
+        author, title, journal, year, month, volume, number, pages, publisher,
+        booktitle, editor, institution, school, address, edition, note,
+        doi, url, abstract, keywords, isbn, issn
       ) |>
       dplyr::mutate_all(function(x) base::replace(x, base::is.na(x), "")) |>
       purrr::pmap(bibliogR::make_bib_entry) |>

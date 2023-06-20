@@ -7,8 +7,8 @@
 #' @param opts List. List of options.
 #' @param ... Other arguments.
 #' @return A data.table with collapsed rows.
-#' @importFrom DT datatable
 #' @importFrom DT JS
+#' @importFrom DT datatable
 #' @importFrom purrr map_chr
 #' @export
 

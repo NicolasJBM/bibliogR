@@ -15,7 +15,7 @@ search_references_server(id, references)
 Filtered list of references
 }
 \description{
-Mudule allowing the user to find references using various filters.
+Module allowing the user to find references using various filters.
 }
 \author{
 Nicolas Mangin

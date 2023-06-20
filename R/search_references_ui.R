@@ -1,18 +1,11 @@
 #' @name search_references_ui
 #' @title Filter a list of references
 #' @author Nicolas Mangin
-#' @description Mudule allowing the user to find references using various filters.
+#' @description Module allowing the user to find references using various filters.
 #' @param id Character. ID of the module to connect the user interface to the appropriate server side.
 #' @return Filter list of references
 #' @importFrom DT dataTableOutput
-#' @importFrom shiny column
-#' @importFrom shiny fluidRow
-#' @importFrom shiny icon
-#' @importFrom shiny NS
-#' @importFrom shiny selectInput
-#' @importFrom shiny sliderInput
 #' @importFrom shinyWidgets searchInput
-#' @importFrom shinydashboardPlus box
 #' @export
 
 
@@ -40,7 +33,7 @@ search_references_ui <- function(id){
           placeholder = "Pattern to search",
           btnSearch = shiny::icon("magnifying-glass"),
           btnReset = shiny::icon("eraser")
-        ),
+        )
       )
     ),
     shiny::column(
@@ -107,7 +100,7 @@ search_references_ui <- function(id){
       shiny::tags$head(
         shiny::tags$style(
           "
-          #filtref-reflist table {
+          #filtref-reflist {
             color: #FFF;
           }
           #filtref-reflist table .odd {

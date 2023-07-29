@@ -61,6 +61,10 @@ make_bib_file <- function(
   jnl <- NULL
   field <- NULL
   
+  
+  #source_folders <- "/Users/nicolas/Dropbox/5-Education/Courses/management_accounting/materials/9_analyses"
+  #destination_folder <- "/Users/nicolas/Dropbox/5-Education/Courses/management_accounting/materials/9_analyses/data"
+  
   # Gather citations
   if (base::is.null(source_folders)) source_folders <- base::getwd()
   files <- c()
@@ -71,7 +75,7 @@ make_bib_file <- function(
     )
   }
   rmdfiles <- tibble::tibble(
-    rmdfiles = files[stringr::str_detect(files, ".Rmd$")]
+    rmdfiles = files[stringr::str_detect(files, ".Rmd$|.qmd$")]
   )
   
   bibfile <- dplyr::case_when(
@@ -87,42 +91,47 @@ make_bib_file <- function(
       base::as.character(base::unlist(content$text)),
       collaspe = " "
     )
-  }
-  
-  selection <- content |>
-    stringr::str_extract_all("@\\w+") |>
-    base::unlist() |>
-    stringr::str_remove_all("@") |>
-    base::unique()
-  
-  # Create bib file and csv files about journals and authors
-  if (base::length(selection) > 0 & base::nrow(references) > 0) {
-    references |>
-      dplyr::filter(key %in% selection) |>
-      tibble::as_tibble() |>
-      dplyr::mutate_all(
-        stringr::str_replace_all,
-        pattern = "&",
-        replacement = "\\\\&"
-      ) |>
-      dplyr::mutate(
-        title = base::paste0("{", title, "}"),
-        abstract = base::paste0("{", abstract, "}")
-      ) |>
-      base::unique() |>
-      dplyr::group_by(key) |>
-      dplyr::sample_n(1) |>
-      dplyr::ungroup() |>
-      tibble::as_tibble() |>
-      dplyr::select(
-        bibtype, key, 
-        author, title, journal, year, month, volume, number, pages, publisher,
-        booktitle, editor, institution, school, address, edition, note,
-        doi, url, abstract, keywords, isbn, issn
-      ) |>
-      dplyr::mutate_all(function(x) base::replace(x, base::is.na(x), "")) |>
-      purrr::pmap(bibliogR::make_bib_entry) |>
+    
+    selection <- content |>
+      stringr::str_extract_all("@\\w+") |>
       base::unlist() |>
-      base::writeLines(bibfile, useBytes = TRUE)
+      stringr::str_remove_all("@") |>
+      base::unique() |>
+      base::as.character()
+    
+    # Create bib file and csv files about journals and authors
+    if (base::length(base::intersect(selection, references$key)) > 0) {
+      references |>
+        dplyr::filter(key %in% selection) |>
+        tibble::as_tibble() |>
+        dplyr::mutate_all(
+          stringr::str_replace_all,
+          pattern = "&",
+          replacement = "\\\\&"
+        ) |>
+        dplyr::mutate(
+          title = base::paste0("{", title, "}"),
+          abstract = base::paste0("{", abstract, "}")
+        ) |>
+        base::unique() |>
+        dplyr::group_by(key) |>
+        dplyr::sample_n(1) |>
+        dplyr::ungroup() |>
+        tibble::as_tibble() |>
+        dplyr::select(
+          bibtype, key, 
+          author, title, journal, year, month, volume, number, pages, publisher,
+          booktitle, editor, institution, school, address, edition, note,
+          doi, url, abstract, keywords, isbn, issn
+        ) |>
+        dplyr::mutate_all(function(x) base::replace(x, base::is.na(x), "")) |>
+        purrr::pmap(bibliogR::make_bib_entry) |>
+        base::unlist() |>
+        base::writeLines(bibfile, useBytes = TRUE)
+    } else {
+      base::writeLines("", bibfile, useBytes = TRUE)
+    }
+  } else {
+    base::writeLines("", bibfile, useBytes = TRUE)
   }
 }

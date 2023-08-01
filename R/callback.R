@@ -2,9 +2,9 @@
 #' @title Table with collapsible rows (2)
 #' @author Nicolas Mangin
 #' @description Function formatting references with collapsible rows
-#' @param x Data.frame. Table of references.
+#' @param x Dataframe. Table of references.
 #' @param pos Integer. Position of the row.
-#' @return A data.table with collapsed rows.
+#' @return A datatable with collapsed rows.
 #' @export
 
 

@@ -7,12 +7,12 @@
 callback(x, pos = NULL)
 }
 \arguments{
-\item{x}{Data.frame. Table of references.}
+\item{x}{Dataframe. Table of references.}
 
 \item{pos}{Integer. Position of the row.}
 }
 \value{
-A data.table with collapsed rows.
+A datatable with collapsed rows.
 }
 \description{
 Function formatting references with collapsible rows

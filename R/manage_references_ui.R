@@ -1,11 +1,20 @@
 #' @name manage_references_ui
 #' @title Batch import new references or delete duplicates.
 #' @author Nicolas Mangin
-#' @description Module allowing the user to import multiple references from a file or to identify and remove duplicated references
+#' @description Module allowing the user to import multiple references from a file or to identify and remove duplicated references.
 #' @param id Character. ID of the module to connect the user interface to the appropriate server side.
 #' @return Save edited list of references
 #' @importFrom lubridate year
 #' @importFrom rhandsontable rHandsontableOutput
+#' @importFrom shiny NS
+#' @importFrom shiny actionButton
+#' @importFrom shiny column
+#' @importFrom shiny fileInput
+#' @importFrom shiny fluidRow
+#' @importFrom shiny icon
+#' @importFrom shiny numericInput
+#' @importFrom shiny selectInput
+#' @importFrom shinyWidgets actionBttn
 #' @importFrom shinyWidgets dropdownButton
 #' @importFrom shinyWidgets tooltipOptions
 #' @export

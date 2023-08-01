@@ -1,6 +1,6 @@
 Package: bibliogR
 Title: Reference Manager
-Version: 1.20
+Version: 1.30
 Date: 2020-02-24
 Authors@R: 
     person(given = "Nicolas",
@@ -8,7 +8,7 @@ Authors@R:
            role = c("aut", "cre"),
            email = "nicolas.jb.mangin@gmail.com",
            comment = c(ORCID = "0000-0002-1597-9376"))
-Description: Facilitate literature reviews and the insertion of citations in rmarkdown documents.
+Description: Facilitate reference management and the insertion of citations in rmarkdown or quarto documents.
 Encoding: UTF-8
 DataVersion: 0.1.20
 License: GPL-3 | file LICENSE
@@ -16,19 +16,19 @@ Depends: R (>= 3.6)
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
 Imports:
-  purrr,
-  DT,
+  glue,
   dplyr,
-  stringr,
-  tibble,
   shiny,
-  shinyWidgets,
   shinyalert,
   shinybusy,
-  glue,
-  tidyr,
+  stringr,
+  tibble,
+  purrr,
   stringdist,
-  lubridate,
+  tidyr,
   readr,
   readxl,
-  rhandsontable
+  rhandsontable,
+  lubridate,
+  shinyWidgets,
+  DT

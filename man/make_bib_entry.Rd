@@ -84,7 +84,7 @@ make_bib_entry(
 A character vector in which each elements is a row of a bib entry.
 }
 \description{
-Function taking one row of a reference list and writing the corresponding entry.
+Function taking one row of a reference list and writing the corresponding entry which will be added to a reference file.
 }
 \author{
 Nicolas Mangin

@@ -5,7 +5,7 @@
 #' @param name Character. Name of the original file.
 #' @param path Character. Path to the temporary file where the references to import are.
 #' @return References from one file.
-#' @importFrom dplyr mutate
+#' @importFrom dplyr filter
 #' @importFrom dplyr mutate_all
 #' @importFrom readr read_csv
 #' @importFrom readxl read_excel

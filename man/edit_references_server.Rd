@@ -2,7 +2,7 @@
 % Please edit documentation in R/edit_references_server.R
 \name{edit_references_server}
 \alias{edit_references_server}
-\title{Edit a list of references}
+\title{Search and edit references}
 \usage{
 edit_references_server(id, course_paths, refdir)
 }
@@ -17,7 +17,7 @@ edit_references_server(id, course_paths, refdir)
 Save edited list of references
 }
 \description{
-Module allowing the user to find references using various filters.
+Module facilitating their edition on a case by case basis.
 }
 \author{
 Nicolas Mangin

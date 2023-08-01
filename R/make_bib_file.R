@@ -1,7 +1,7 @@
 #' @name make_bib_file
 #' @title Write a bib file
 #' @author Nicolas Mangin
-#' @description Function 
+#' @description Function listing references cited in rmarkdown or quarto document and creating the corresponding .bibtex reference file.
 #' @param source_folders Character. Paths to the folders where the .Rmd files are.
 #' @param references Tibble. List of references.
 #' @param destination_folder Character. Path to the folder where the .bib file should be written.

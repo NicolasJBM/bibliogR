@@ -1,7 +1,7 @@
 #' @name manage_references_server
 #' @title Batch import new references or delete duplicates.
 #' @author Nicolas Mangin
-#' @description Module allowing the user to import multiple references from a file or to identify and remove duplicated references
+#' @description Module allowing the user to import multiple references from a file or to identify and remove duplicated references.
 #' @param id Character. ID of the module to connect the user interface to the appropriate server side.
 #' @param references Reactive. Function containing a list of references.
 #' @param refdir Character. Path to the folder where the references are.
@@ -23,6 +23,12 @@
 #' @importFrom rhandsontable hot_to_r
 #' @importFrom rhandsontable renderRHandsontable
 #' @importFrom rhandsontable rhandsontable
+#' @importFrom shiny NS
+#' @importFrom shiny moduleServer
+#' @importFrom shiny observeEvent
+#' @importFrom shiny reactive
+#' @importFrom shiny reactiveValues
+#' @importFrom shiny req
 #' @importFrom shinyalert shinyalert
 #' @importFrom shinybusy remove_modal_spinner
 #' @importFrom shinybusy show_modal_spinner

@@ -1,13 +1,19 @@
 #' @name make_reference_form
-#' @title Create the form to edit references
+#' @title Create a reference edition form
 #' @author Nicolas Mangin
-#' @description Function creating a shiny form allowing the user to edit old or create new references.
+#' @description Function creating a shiny form allowing the user to edit old or add new references in the main reference database.
 #' @param id Character. ID of the module to connect the user interface to the appropriate server side.
 #' @param refkey Character. Bib key of the reference to edit.
 #' @param type Character. Bib type of the reference to edit.
 #' @param references Tibble. List of references.
 #' @return A form with all the fields which should or can be filled for each type.
 #' @importFrom dplyr filter
+#' @importFrom shiny NS
+#' @importFrom shiny column
+#' @importFrom shiny fluidRow
+#' @importFrom shiny selectizeInput
+#' @importFrom shiny textAreaInput
+#' @importFrom shiny textInput
 #' @export
 
 

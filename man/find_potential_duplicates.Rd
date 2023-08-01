@@ -2,7 +2,7 @@
 % Please edit documentation in R/find_potential_duplicates.R
 \name{find_potential_duplicates}
 \alias{find_potential_duplicates}
-\title{Identify potential duplicates}
+\title{Identify potential duplicates in a list of references}
 \usage{
 find_potential_duplicates(x, distmethod = "qgram", maxdist = 10)
 }
@@ -11,7 +11,7 @@ find_potential_duplicates(x, distmethod = "qgram", maxdist = 10)
 
 \item{distmethod}{Character. Method to compute distances between titles. Can be: osa, lv, dl, hammig, lcs, qgram, cosine, jaccard, jw, or soundex.}
 
-\item{maxdist}{Numeric. Threshold to apply. Only tities the distance between which is smaller or equal to this number will be returned for check.}
+\item{maxdist}{Numeric. Threshold to apply. Only titles the distance between which is smaller or equal to this number will be returned for check.}
 }
 \value{
 A numeric vector with the row numbers of the potential duplicates

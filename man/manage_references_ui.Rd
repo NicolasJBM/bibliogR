@@ -13,7 +13,7 @@ manage_references_ui(id)
 Save edited list of references
 }
 \description{
-Module allowing the user to import multiple references from a file or to identify and remove duplicated references
+Module allowing the user to import multiple references from a file or to identify and remove duplicated references.
 }
 \author{
 Nicolas Mangin

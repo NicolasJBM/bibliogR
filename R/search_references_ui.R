@@ -5,6 +5,12 @@
 #' @param id Character. ID of the module to connect the user interface to the appropriate server side.
 #' @return Filter list of references
 #' @importFrom DT dataTableOutput
+#' @importFrom shiny NS
+#' @importFrom shiny column
+#' @importFrom shiny fluidRow
+#' @importFrom shiny icon
+#' @importFrom shiny selectInput
+#' @importFrom shiny sliderInput
 #' @importFrom shinyWidgets searchInput
 #' @export
 

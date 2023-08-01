@@ -11,6 +11,12 @@
 #' @importFrom dplyr desc
 #' @importFrom dplyr mutate_all
 #' @importFrom dplyr select
+#' @importFrom shiny NS
+#' @importFrom shiny moduleServer
+#' @importFrom shiny reactive
+#' @importFrom shiny req
+#' @importFrom shiny updateSelectInput
+#' @importFrom shiny updateSliderInput
 #' @export
 
 

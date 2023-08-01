@@ -1,7 +1,7 @@
 #' @name edit_references_server
-#' @title Edit a list of references
+#' @title Search and edit references
 #' @author Nicolas Mangin
-#' @description Module allowing the user to find references using various filters.
+#' @description Module facilitating their edition on a case by case basis.
 #' @param id Character. ID of the module to connect the user interface to the appropriate server side.
 #' @param course_paths Reactive. Function containing a list of paths to the different folders and databases on local disk.
 #' @param refdir Character. Path to the folder where the references are.
@@ -11,6 +11,21 @@
 #' @importFrom dplyr left_join
 #' @importFrom dplyr mutate_all
 #' @importFrom dplyr select
+#' @importFrom shiny NS
+#' @importFrom shiny actionButton
+#' @importFrom shiny icon
+#' @importFrom shiny modalButton
+#' @importFrom shiny modalDialog
+#' @importFrom shiny moduleServer
+#' @importFrom shiny observeEvent
+#' @importFrom shiny reactive
+#' @importFrom shiny removeModal
+#' @importFrom shiny req
+#' @importFrom shiny selectInput
+#' @importFrom shiny selectizeInput
+#' @importFrom shiny showModal
+#' @importFrom shiny tagList
+#' @importFrom shiny textInput
 #' @importFrom shinyalert shinyalert
 #' @importFrom shinybusy remove_modal_spinner
 #' @importFrom shinybusy show_modal_spinner

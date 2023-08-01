@@ -2,7 +2,7 @@
 % Please edit documentation in R/make_reference_form.R
 \name{make_reference_form}
 \alias{make_reference_form}
-\title{Create the form to edit references}
+\title{Create a reference edition form}
 \usage{
 make_reference_form(id, refkey, type, references)
 }
@@ -19,7 +19,7 @@ make_reference_form(id, refkey, type, references)
 A form with all the fields which should or can be filled for each type.
 }
 \description{
-Function creating a shiny form allowing the user to edit old or create new references.
+Function creating a shiny form allowing the user to edit old or add new references in the main reference database.
 }
 \author{
 Nicolas Mangin

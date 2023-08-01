@@ -2,7 +2,7 @@
 % Please edit documentation in R/edit_references_ui.R
 \name{edit_references_ui}
 \alias{edit_references_ui}
-\title{Edit a list of references}
+\title{Search and edit references}
 \usage{
 edit_references_ui(id)
 }
@@ -13,7 +13,7 @@ edit_references_ui(id)
 Save edited list of references
 }
 \description{
-Module allowing the user to edit references.
+Module facilitating their edition on a case by case basis.
 }
 \author{
 Nicolas Mangin

@@ -1,10 +1,10 @@
 #' @name find_potential_duplicates
-#' @title Identify potential duplicates
+#' @title Identify potential duplicates in a list of references
 #' @author Nicolas Mangin
 #' @description Function computing distances between titles and selecting those which are too close as defined by a maximum distance.
 #' @param x Tibble. Table with keys and titles.
 #' @param distmethod Character. Method to compute distances between titles. Can be: osa, lv, dl, hammig, lcs, qgram, cosine, jaccard, jw, or soundex.
-#' @param maxdist Numeric. Threshold to apply. Only tities the distance between which is smaller or equal to this number will be returned for check.
+#' @param maxdist Numeric. Threshold to apply. Only titles the distance between which is smaller or equal to this number will be returned for check.
 #' @return A numeric vector with the row numbers of the potential duplicates
 #' @importFrom dplyr filter
 #' @importFrom dplyr mutate

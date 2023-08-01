@@ -1,7 +1,7 @@
 #' @name make_bib_entry
 #' @title Write an entry for a bibtex file
 #' @author Nicolas Mangin
-#' @description Function taking one row of a reference list and writing the corresponding entry.
+#' @description Function taking one row of a reference list and writing the corresponding entry which will be added to a reference file.
 #' @param bibtype Character.
 #' @param key Character.
 #' @param author Character.

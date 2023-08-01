@@ -14,7 +14,7 @@ manage_references_server(id, references, refdir)
 \item{refdir}{Character. Path to the folder where the references are.}
 }
 \description{
-Module allowing the user to import multiple references from a file or to identify and remove duplicated references
+Module allowing the user to import multiple references from a file or to identify and remove duplicated references.
 }
 \author{
 Nicolas Mangin

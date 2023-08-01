@@ -1,9 +1,14 @@
 #' @name edit_references_ui
-#' @title Edit a list of references
+#' @title Search and edit references
 #' @author Nicolas Mangin
-#' @description Module allowing the user to edit references.
+#' @description Module facilitating their edition on a case by case basis.
 #' @param id Character. ID of the module to connect the user interface to the appropriate server side.
 #' @return Save edited list of references
+#' @importFrom shiny NS
+#' @importFrom shiny actionButton
+#' @importFrom shiny column
+#' @importFrom shiny fluidRow
+#' @importFrom shiny icon
 #' @export
 
 

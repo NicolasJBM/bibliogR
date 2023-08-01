@@ -24,7 +24,7 @@ make_bib_file(
 Write a .bib files with all the references quoted in the .Rmd files
 }
 \description{
-Function
+Function listing references cited in rmarkdown or quarto document and creating the corresponding .bibtex reference file.
 }
 \author{
 Nicolas Mangin

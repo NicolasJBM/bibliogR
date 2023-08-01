@@ -32,3 +32,5 @@ Imports:
   lubridate,
   shinyWidgets,
   DT
+URL: https://github.com/NicolasJBM/bibliogR
+BugReports: https://github.com/NicolasJBM/bibliogR/issues

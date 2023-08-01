@@ -1,19 +1,22 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# bibliogR
+# bibliogR <img src="https://raw.githubusercontent.com/NicolasJBM/bibliogR/911ace9c00025a457edd84e924bc70bb42e8b28f/docs/assets/bibliogR.svg" align="right" width="100" height="100" >
 
 <!-- badges: start -->
 
 [![Lifecycle:
-stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
+experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![CRAN
 status](https://www.r-pkg.org/badges/version/bibliogR)](https://CRAN.R-project.org/package=bibliogR)
+[![R-CMD-check](https://github.com/NicolasJBM/bibliogR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/NicolasJBM/bibliogR/actions/workflows/R-CMD-check.yaml)
 [![CodeFactor](https://www.codefactor.io/repository/github/NicolasJBM/bibliogR/badge)](https://www.codefactor.io/repository/github/NicolasJBM/bibliogR)
 <!-- badges: end -->
 
 The goal of bibliogR is to facilitate the search, citation, edition, and
-maintenance of references in the scholRuniverse.
+maintenance of references in the scholR package set. It is not a stand
+alone package as it has to be used in a shiny dashboard for either
+education or research purposes.
 
 ## Installation
 
@@ -25,4 +28,90 @@ You can install the development version of bibliogR from
 devtools::install_github("NicolasJBM/bibliogR")
 ```
 
-## Use
+There is so far no CRAN version.
+
+## References database
+
+The use of this module necessitates that a file called
+“references.RData” exists in the same folder as the shiny dashboard
+application using bibliogR. This file should contain a single tibble
+called “references” with the following variables, all of class
+“character”:
+
+<div style="width:33%;float:left;">
+
+- bibtype
+- key
+- author
+- title
+- journal
+- year
+- month
+- volume
+- number
+- pages
+
+</div>
+
+<div style="width:32%;float: left;">
+
+- publisher
+- booktitle
+- editor
+- institution
+- school
+- address
+- edition
+- note <br>  
+  <br>
+
+</div>
+
+<div style="width:32%;float: left;">
+
+- doi
+- url
+- abstract
+- keywords
+- isbn
+- issn
+- jnl
+- field <br>  
+  <br>
+
+</div>
+
+This database of references is used to produce the bilatex reference
+file (.bib) used by Rmarkdown (.Rmd) and quarto (.qmd) documents to
+produce a bibliography (see the “update” action in the edition
+subsection of the use section).
+
+## Uses
+
+This package includes three distinct shiny modules for edition, search,
+and management.
+
+### Edition of references from the control panel
+
+*bibliogR::edit_references_ui(“id”)* and
+*bibliogR::edit_references_server(“id”)* should be added respectively to
+the control panel and the server of a shinydashboard. This module is a
+set of action buttons allowing the user to:
+
+- **Edit** an existing reference or **create** a new one;
+- **Delete** a reference;
+- **Reload** the reference file (not automatically done after each
+  change);
+- **Update** the bib file containing all the references cited in the
+  documents managed by the shiny application.
+
+### Search of references from the control panel
+
+*bibliogR::search_references_ui(“id”)* and
+*bibliogR::search_references_server(“id”)* should also be added to the
+control panel of a shinydashboard.
+
+### Reference management from the main panel
+
+*bibliogR::manage_references_ui(“id”)* and
+*bibliogR::manage_references_server(“id”)*

@@ -66,11 +66,11 @@
       </header><div class="row">
   <div class="contents col-md-9">
 <div class="section level1">
-<div class="page-header"><h1 id="bibliogr">bibliogR<a class="anchor" aria-label="anchor" href="#bibliogr"></a>
+<div class="page-header"><h1 id="bibliogr-">bibliogR <img src="https://raw.githubusercontent.com/NicolasJBM/bibliogR/911ace9c00025a457edd84e924bc70bb42e8b28f/docs/assets/bibliogR.svg" align="right" width="100" height="100"><a class="anchor" aria-label="anchor" href="#bibliogr-"></a>
 </h1></div>
 <!-- badges: start -->
 
-<p>The goal of bibliogR is to facilitate the search, citation, edition, and maintenance of references in the scholRuniverse.</p>
+<p>The goal of bibliogR is to facilitate the search, citation, edition, and maintenance of references in the scholR package set. It is not a stand alone package as it has to be used in a shiny dashboard for either education or research purposes.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
@@ -78,28 +78,83 @@
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("devtools")</span></span>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"NicolasJBM/bibliogR"</span><span class="op">)</span></span></code></pre></div>
+<p>There is so far no CRAN version.</p>
 </div>
 <div class="section level2">
-<h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
+<h2 id="references-database">References database<a class="anchor" aria-label="anchor" href="#references-database"></a>
 </h2>
-<p>This is a basic example which shows you how to solve a common problem:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/NicolasJBM/bibliogR" class="external-link">bibliogR</a></span><span class="op">)</span></span>
-<span><span class="co">## basic example code</span></span></code></pre></div>
-<p>What is special about using <code>README.Rmd</code> instead of just <code>README.md</code>? You can include R chunks like so:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">cars</span><span class="op">)</span></span>
-<span><span class="co">#&gt;      speed           dist       </span></span>
-<span><span class="co">#&gt;  Min.   : 4.0   Min.   :  2.00  </span></span>
-<span><span class="co">#&gt;  1st Qu.:12.0   1st Qu.: 26.00  </span></span>
-<span><span class="co">#&gt;  Median :15.0   Median : 36.00  </span></span>
-<span><span class="co">#&gt;  Mean   :15.4   Mean   : 42.98  </span></span>
-<span><span class="co">#&gt;  3rd Qu.:19.0   3rd Qu.: 56.00  </span></span>
-<span><span class="co">#&gt;  Max.   :25.0   Max.   :120.00</span></span></code></pre></div>
-<p>You’ll still need to render <code>README.Rmd</code> regularly, to keep <code>README.md</code> up-to-date. <code><a href="https://devtools.r-lib.org/reference/build_rmd.html" class="external-link">devtools::build_readme()</a></code> is handy for this.</p>
-<p>You can also embed plots, for example:</p>
-<p><img src="reference/figures/README-pressure-1.png" width="100%"></p>
-<p>In that case, don’t forget to commit and push the resulting figure files, so they display on GitHub and CRAN.</p>
+<p>The use of this module necessitates that a file called “references.RData” exists in the same folder as the shiny dashboard application using bibliogR. This file should contain a single tibble called “references” with the following variables, all of class “character”:</p>
+<div style="width:33%;float:left;">
+<ul>
+<li>bibtype</li>
+<li>key</li>
+<li>author</li>
+<li>title</li>
+<li>journal</li>
+<li>year</li>
+<li>month</li>
+<li>volume</li>
+<li>number</li>
+<li>pages</li>
+</ul>
+</div>
+<div style="width:32%;float: left;">
+<ul>
+<li>publisher</li>
+<li>booktitle</li>
+<li>editor</li>
+<li>institution</li>
+<li>school</li>
+<li>address</li>
+<li>edition</li>
+<li>note <br><br><br>
+</li>
+</ul>
+</div>
+<div style="width:32%;float: left;">
+<ul>
+<li>doi</li>
+<li>url</li>
+<li>abstract</li>
+<li>keywords</li>
+<li>isbn</li>
+<li>issn</li>
+<li>jnl</li>
+<li>field <br><br><br>
+</li>
+</ul>
+</div>
+<p>This database of references is used to produce the bilatex reference file (.bib) used by Rmarkdown (.Rmd) and quarto (.qmd) documents to produce a bibliography (see the “update” action in the edition subsection of the use section).</p>
+</div>
+<div class="section level2">
+<h2 id="uses">Uses<a class="anchor" aria-label="anchor" href="#uses"></a>
+</h2>
+<p>This package includes three distinct shiny modules for edition, search, and management.</p>
+<div class="section level3">
+<h3 id="edition-of-references-from-the-control-panel">Edition of references from the control panel<a class="anchor" aria-label="anchor" href="#edition-of-references-from-the-control-panel"></a>
+</h3>
+<p><em>bibliogR::edit_references_ui(“id”)</em> and <em>bibliogR::edit_references_server(“id”)</em> should be added respectively to the control panel and the server of a shinydashboard. This module is a set of action buttons allowing the user to:</p>
+<ul>
+<li>
+<strong>Edit</strong> an existing reference or <strong>create</strong> a new one;</li>
+<li>
+<strong>Delete</strong> a reference;</li>
+<li>
+<strong>Reload</strong> the reference file (not automatically done after each change);</li>
+<li>
+<strong>Update</strong> the bib file containing all the references cited in the documents managed by the shiny application.</li>
+</ul>
+</div>
+<div class="section level3">
+<h3 id="search-of-references-from-the-control-panel">Search of references from the control panel<a class="anchor" aria-label="anchor" href="#search-of-references-from-the-control-panel"></a>
+</h3>
+<p><em>bibliogR::search_references_ui(“id”)</em> and <em>bibliogR::search_references_server(“id”)</em> should also be added to the control panel of a shinydashboard.</p>
+</div>
+<div class="section level3">
+<h3 id="reference-management-from-the-main-panel">Reference management from the main panel<a class="anchor" aria-label="anchor" href="#reference-management-from-the-main-panel"></a>
+</h3>
+<p><em>bibliogR::manage_references_ui(“id”)</em> and <em>bibliogR::manage_references_server(“id”)</em></p>
+</div>
 </div>
 </div>
   </div>
@@ -140,8 +195,9 @@
 <div class="dev-status">
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://lifecycle.r-lib.org/articles/stages.html#stable" class="external-link"><img src="https://img.shields.io/badge/lifecycle-stable-brightgreen.svg" alt="Lifecycle: stable"></a></li>
+<li><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="Lifecycle: experimental"></a></li>
 <li><a href="https://CRAN.R-project.org/package=bibliogR" class="external-link"><img src="https://www.r-pkg.org/badges/version/bibliogR" alt="CRAN status"></a></li>
+<li><a href="https://github.com/NicolasJBM/bibliogR/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/NicolasJBM/bibliogR/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
 <li><a href="https://www.codefactor.io/repository/github/NicolasJBM/bibliogR" class="external-link"><img src="https://www.codefactor.io/repository/github/NicolasJBM/bibliogR/badge" alt="CodeFactor"></a></li>
 </ul>
 </div>

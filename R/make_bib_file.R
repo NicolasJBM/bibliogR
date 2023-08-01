@@ -67,7 +67,7 @@ make_bib_file <- function(
   
   # Gather citations
   if (base::is.null(source_folders)) source_folders <- base::getwd()
-  files <- c()
+  files <- base::character(0)
   for (path in source_folders){
     files <- c(
       files,

@@ -70,6 +70,8 @@ edit_references_server <- function(id, course_paths, refdir){
     
     references <- shiny::reactive({
       input$loadref
+      input$saved
+      input$deleted
       shinybusy::show_modal_spinner(
         spin = "orbit",
         text = "Loading references..."
@@ -202,7 +204,7 @@ edit_references_server <- function(id, course_paths, refdir){
       shinyalert::shinyalert(
         title = "References saved!",
         text = "Now reload the references to see the changes you made.",
-        type = "success"
+        type = "success", closeOnEsc = FALSE, inputId = "saved"
       )
     })
     
@@ -252,7 +254,7 @@ edit_references_server <- function(id, course_paths, refdir){
       shinyalert::shinyalert(
         title = "References deleted!",
         text = "Now reload the references to see the changes you made.",
-        type = "success"
+        type = "success", closeOnEsc = FALSE, inputId = "deleted"
       )
     })
     

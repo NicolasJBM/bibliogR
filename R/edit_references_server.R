@@ -213,7 +213,7 @@ edit_references_server <- function(id, course_paths, refdir){
         title = "References removal",
         "Write down the citation keys of the references you wish to remove.",
         shiny::selectizeInput(
-          ns("defrmkeys"), "Keys:", choices = base::character(NA), selected = NA,
+          ns("defrmkeys"), "Keys:", choices = NA, selected = NA,
           multiple = TRUE, options = base::list(create = TRUE), width = "100%"
         ),
         footer = shiny::tagList(

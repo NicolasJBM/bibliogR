@@ -37,6 +37,6 @@ make_new_key <- function(name, year, keys) {
       )
     )
   )
-  addkey <- base::sort(base::setdiff(newkeys, keys))[[1]]
+  addkey <- base::setdiff(newkeys, keys)[[1]]
   return(addkey)
 }

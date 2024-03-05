@@ -20,7 +20,7 @@ edit_references_ui <- function(id){
         3,
         shiny::actionButton(
           ns("editref"), "Edit", icon = shiny::icon("pen-to-square"),
-          style = "background-color:#000066;color:#FFF;width:100%;margin-bottom:10px;",
+          style = "background-color:#000066;color:#FFF;width:100%;margin-bottom:10px;border:0px;",
           title = "Open a form to add a new reference or edit an existing one. Reload references after."
         )
       ),
@@ -28,7 +28,7 @@ edit_references_ui <- function(id){
         3,
         shiny::actionButton(
           ns("delref"), "Delete", icon = shiny::icon("trash-can"),
-          style = "background-color:#660000;color:#FFF;width:100%;margin-bottom:10px;",
+          style = "background-color:#660000;color:#FFF;width:100%;margin-bottom:10px;border:0px;",
           title = "Open a form to enter the keys of references which should be deleted."
         )
       ),
@@ -36,7 +36,7 @@ edit_references_ui <- function(id){
         3,
         shiny::actionButton(
           ns("loadref"), "Load", icon = shiny::icon("upload"),
-          style = "background-color:#336666;color:#FFF;width:100%;",
+          style = "background-color:#336666;color:#FFF;width:100%;border:0px;",
           title = "Load or reload references."
         )
       ),
@@ -46,7 +46,7 @@ edit_references_ui <- function(id){
           ns("updateref"),
           "Update",
           icon = shiny::icon("rotate"),
-          style = "background-color:#006699;color:#FFF;width:100%;",
+          style = "background-color:#006699;color:#FFF;width:100%;border:0px;",
           title = "Update the .bib file to include all references cited in all the documents."
         )
       )

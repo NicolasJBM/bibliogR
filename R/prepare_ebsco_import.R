@@ -12,6 +12,8 @@
 #' @importFrom stringr str_detect
 #' @importFrom stringr str_replace_all
 #' @importFrom stringr str_to_title
+#' @importFrom stringr str_to_lower
+#' @importFrom stringr str_to_sentence
 #' @importFrom tibble tibble
 #' @importFrom tidyr unnest
 #' @export
@@ -25,6 +27,8 @@ prepare_ebsco_import <- function(files, type = "article"){
   pages <- NULL
   pages2 <- NULL
   title <- NULL
+  abstract <- NULL
+  keywords <- NULL
   
   files <- files[stringr::str_detect(files, ".csv$")]
   
@@ -61,6 +65,8 @@ prepare_ebsco_import <- function(files, type = "article"){
     dplyr::mutate(
       title = stringr::str_to_title(title),
       author = stringr::str_to_title(author),
+      keywords = stringr::str_to_lower(keywords),
+      abstracts = stringr::str_to_sentence(abstract),
       pages = base::paste0(pages, "--", pages + pages2)
     ) |>
     dplyr::select(-pages2) |>

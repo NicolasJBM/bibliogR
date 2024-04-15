@@ -16,6 +16,9 @@
 #' @importFrom stringr str_detect
 #' @importFrom stringr str_remove_all
 #' @importFrom stringr str_replace
+#' @importFrom stringr str_to_title
+#' @importFrom stringr str_to_lower
+#' @importFrom stringr str_to_sentence
 #' @importFrom tibble tibble
 #' @importFrom tidyr pivot_wider
 #' @importFrom tidyr separate
@@ -26,6 +29,11 @@ prepare_bib_import <- function(files, type = "article"){
   
   bibtype <- NULL
   lines <- NULL
+  abstract <- NULL
+  author <- NULL
+  journal <- NULL
+  keywords <- NULL
+  title <- NULL
   
   files <- files[stringr::str_detect(files, ".bib$")]
   
@@ -70,7 +78,14 @@ prepare_bib_import <- function(files, type = "article"){
     "doi", "publisher", "bibtype", "keywords", "abstract", "url"
   )
   
-  references <- references[, base::intersect(keep, base::names(references))]
+  references <- references[, base::intersect(keep, base::names(references))] |>
+    dplyr::mutate(
+      title = stringr::str_to_title(title),
+      keywords = stringr::str_to_lower(keywords),
+      abstracts = stringr::str_to_sentence(abstract)
+    ) |>
+    dplyr::filter(!base::is.na(journal)) |>
+    dplyr::filter(!base::is.na(author), base::nchar(author) > 3, stringr::str_detect(author, ","))
   
   return(references)
 }

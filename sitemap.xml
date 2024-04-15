@@ -40,6 +40,9 @@
     <loc>/reference/index.html</loc>
   </url>
   <url>
+    <loc>/reference/journals.html</loc>
+  </url>
+  <url>
     <loc>/reference/make_bib_entry.html</loc>
   </url>
   <url>
@@ -56,6 +59,12 @@
   </url>
   <url>
     <loc>/reference/manage_references_ui.html</loc>
+  </url>
+  <url>
+    <loc>/reference/prepare_bib_import.html</loc>
+  </url>
+  <url>
+    <loc>/reference/prepare_ebsco_import.html</loc>
   </url>
   <url>
     <loc>/reference/search_references_server.html</loc>

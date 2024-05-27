@@ -206,11 +206,8 @@ manage_references_server <- function(id, references, refdir){
         assigned_keys <- c(assigned_keys, tmpkey)
       }
       # Append journal information
-      journal_info <- references() |>
-        dplyr::select(journal, issn, jnl, field) |>
-        base::unique() |> stats::na.omit()
-      import <- import |>
-        dplyr::left_join(journal_info, by = "journal")
+      import <- import[,base::setdiff(base::names(import), c("journal","jnl","field"))] |>
+        dplyr::left_join(journals, by = "issn")
       references <- dplyr::bind_rows(references(), import)
       shinybusy::show_modal_spinner(
         spin = "orbit",

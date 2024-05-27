@@ -1,5 +1,5 @@
 #' @name journals
-#' @title Journals
+#' @title journals
 #' @format List of collected journals with acronym, issn, and field.
 #' \itemize{
 #'   \item  journal   character
@@ -8,6 +8,7 @@
 #'   \item  field   character
 #' }
 #' @docType data
-#' @keywords datasets
+#' @keywords dataset
 #' @usage data(journals)
-NULL
+
+"journals"

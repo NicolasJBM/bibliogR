@@ -74,7 +74,7 @@ prepare_bib_import <- function(files, type = "article"){
     dplyr::filter(base::tolower(bibtype) == type)
   
   keep <- c(
-    "title", "author", "journal", "year", "volume", "number", "pages", "pages2",
+    "title", "author", "journal", "issn", "year", "volume", "number", "pages", "pages2",
     "doi", "publisher", "bibtype", "keywords", "abstract", "url"
   )
   
@@ -85,7 +85,7 @@ prepare_bib_import <- function(files, type = "article"){
       abstracts = stringr::str_to_sentence(abstract)
     ) |>
     dplyr::filter(!base::is.na(journal)) |>
-    dplyr::filter(!base::is.na(author), base::nchar(author) > 3, stringr::str_detect(author, ","))
+    dplyr::filter(!base::is.na(author), base::nchar(author) > 3)
   
   return(references)
 }

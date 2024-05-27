@@ -42,6 +42,7 @@ prepare_ebsco_import <- function(files, type = "article"){
       title = 'Article Title',
       author = 'Author',
       journal = 'Journal Title',
+      issn = 'ISSN',
       year = 'Publication Date',
       volume = 'Volume',
       number = 'Issue',
@@ -66,7 +67,7 @@ prepare_ebsco_import <- function(files, type = "article"){
       title = stringr::str_to_title(title),
       author = stringr::str_to_title(author),
       keywords = stringr::str_to_lower(keywords),
-      abstracts = stringr::str_to_sentence(abstract),
+      abstract = stringr::str_to_sentence(abstract),
       pages = base::paste0(pages, "--", pages + pages2)
     ) |>
     dplyr::select(-pages2) |>

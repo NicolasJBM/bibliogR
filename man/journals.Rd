@@ -3,7 +3,7 @@
 \docType{data}
 \name{journals}
 \alias{journals}
-\title{Journals}
+\title{journals}
 \format{
 List of collected journals with acronym, issn, and field.
 \itemize{
@@ -17,6 +17,6 @@ List of collected journals with acronym, issn, and field.
 data(journals)
 }
 \description{
-Journals
+journals
 }
-\keyword{datasets}
+\keyword{dataset}
